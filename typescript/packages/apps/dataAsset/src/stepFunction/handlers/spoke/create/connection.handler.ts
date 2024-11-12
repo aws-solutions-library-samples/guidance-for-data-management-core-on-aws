@@ -1,4 +1,4 @@
-import { buildLightApp } from '../../../../app.light';
+import { buildLightApp } from '../../../../app.light.js';
 import type { AwilixContainer } from 'awilix';
 import type { FastifyInstance } from 'fastify';
 import type { ConnectionTask } from '../../../tasks/spoke/create/connectionTask.js';

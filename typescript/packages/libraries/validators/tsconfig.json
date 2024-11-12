@@ -1,21 +1,23 @@
 {
-	"extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+	"extends": "@tsconfig/node20/tsconfig.json",
 	"compilerOptions": {
 		"outDir": "dist",
 		"rootDir": "src",
 		"types": [
 			"node"
 		],
-		"composite": true,
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
 		"esModuleInterop": true,
 		"ignoreDeprecations": "5.0",
-		"experimentalDecorators": true,
+		"noPropertyAccessFromIndexSignature": false,
 		// overrides of extends
 		"strict": false,
-		"exactOptionalPropertyTypes": false
+		"exactOptionalPropertyTypes": false,
+
+		"composite": true
+
 	},
 	"include": [
 		"src/**/*.ts"

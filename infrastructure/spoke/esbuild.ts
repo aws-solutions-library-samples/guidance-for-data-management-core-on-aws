@@ -20,7 +20,7 @@ esbuild
             '.js': '.cjs',
         },
         platform: 'node',
-        target: ['node18'],
+        target: ['node20'],
     })
     .catch(() => process.exit(1));
 

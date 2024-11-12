@@ -48,7 +48,7 @@ export class Cognito extends Construct {
 			functionName: `${namePrefix}-preTokenGenerationLambdaTrigger`,
 			description: `Cognito Construct Pre Token Generation Lambda Trigger`,
 			entry: path.join(__dirname, './triggers/preTokenGeneration.trigger.ts'),
-			runtime: Runtime.NODEJS_18_X,
+			runtime: Runtime.NODEJS_20_X,
 			tracing: Tracing.ACTIVE,
 			memorySize: 512,
 			logRetention: RetentionDays.ONE_WEEK,
@@ -56,7 +56,7 @@ export class Cognito extends Construct {
 			bundling: {
 				minify: true,
 				format: OutputFormat.ESM,
-				target: 'node18.16',
+				target: 'node20',
 				sourceMap: false,
 				sourcesContent: false,
 				banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',

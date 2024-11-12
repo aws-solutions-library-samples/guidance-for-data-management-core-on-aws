@@ -18,7 +18,7 @@ build({
 	minify: true,
 	format: 'esm',
 	platform: 'node',
-	target: 'node18.16',
+	target: 'node20',
 	sourcemap: false,
 	sourcesContent: false,
 	outfile: 'dist/app.mjs',

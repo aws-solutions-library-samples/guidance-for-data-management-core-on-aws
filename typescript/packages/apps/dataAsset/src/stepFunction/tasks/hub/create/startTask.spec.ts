@@ -1,16 +1,16 @@
 import { describe, it } from "vitest";
-import { StartTask } from "./startTask";
+import { StartTask } from "./startTask.js";
 import pino from "pino";
 import { EventPublisher } from "@df/events";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
-import { DataZoneUserAuthClientFactory } from "../../../../plugins/module.awilix";
+import { DataZoneUserAuthClientFactory } from "../../../../plugins/module.awilix.js";
 import { STSClient } from "@aws-sdk/client-sts";
 
 describe('StartTask', () => {
     let task: StartTask;
 
     it('should emit the lineage event properly', async () => {
-        const logger = pino(
+        const logger = pino.default(
             pino.destination({
                 sync: true // test frameworks must use pino logger in sync mode!
             })

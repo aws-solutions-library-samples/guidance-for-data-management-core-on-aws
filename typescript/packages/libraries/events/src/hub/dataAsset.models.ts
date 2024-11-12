@@ -1,4 +1,4 @@
-import type { DataAsset } from "../common/dataAsset.models";
+import type { DataAsset } from "../common/dataAsset.models.js";
 
 export interface dataAssetHubCreateRequestEvent {
     EventBusName: string,

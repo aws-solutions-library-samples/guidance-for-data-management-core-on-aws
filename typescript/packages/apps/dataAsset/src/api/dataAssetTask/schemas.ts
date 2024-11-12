@@ -6,6 +6,7 @@ import { stringEnum } from '../../common/types.js'
  * Resource specific path parameters
  */
 export const id = Type.String({description: 'Unique id of the request.'});
+export const status = stringEnum(['RUNNING', 'SUCCEEDED', 'FAILED', 'TIMED_OUT', 'ABORTED'], 'The status of the data asset task.');
 export const version = Type.Optional(Type.Number({description: 'specify the version number'}));
 export const createdBy = Type.String({description: 'ID of owner.'});
 export const createdAt = Type.String({
@@ -203,6 +204,7 @@ export const execution = Type.Object({
 
 export const dataAssetTaskResource = Type.Object({
     id,
+    status,
     idcUserId: Type.String({description: "The user's IAM Identity Center User ID."}),
     catalog,
     workflow,
@@ -235,7 +237,7 @@ export const dataAssetTaskResourceList = Type.Object(
     }
 );
 
-
+export type Status = Static<typeof status>;
 export type Catalog = Static<typeof catalog>;
 export type Workflow = Static<typeof workflow>;
 export type DataZoneInput = Static<typeof dataZoneAssetInput>;

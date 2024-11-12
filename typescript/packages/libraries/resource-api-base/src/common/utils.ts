@@ -1,5 +1,5 @@
 import type { BaseLogger } from 'pino';
-import type { ListIdsPaginationKey, ListIdsPaginationTokenKey } from '../resources/models';
+import type { ListIdsPaginationKey, ListIdsPaginationTokenKey } from '../resources/models.js';
 
 export class Utils {
 	private readonly log: BaseLogger;

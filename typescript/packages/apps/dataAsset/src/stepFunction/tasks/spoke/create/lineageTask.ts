@@ -97,6 +97,7 @@ export class LineageTask {
             id: profile.dataAsset.id,
             catalog: profile.dataAsset.catalog,
             workflow: profile.dataAsset.workflow,
+            workflowState: 'SUCCEEDED',
             hubTaskToken: profile.dataAsset.execution.hubTaskToken,
             fullPayloadSignedUrl: signedUrl,
             dataProfileSignedUrl: signedUrl,

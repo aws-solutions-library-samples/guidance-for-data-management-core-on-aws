@@ -1,8 +1,8 @@
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import type { DataAssetTask, TaskType } from "../stepFunction/tasks/models.js";
 import type { BaseLogger } from "pino";
-import type { GetSignedUrl } from "../plugins/module.awilix.js";
 import type { GetDataQualityResultCommandOutput } from "@aws-sdk/client-glue";
+import { getSignedUrl as gsu } from '@aws-sdk/s3-request-presigner';
 
 
 export class S3Utils {
@@ -12,7 +12,7 @@ export class S3Utils {
         private readonly s3Client: S3Client, 
         private readonly bucketName: string, 
         private readonly bucketPrefix: string,
-        private readonly getSignedUrl:GetSignedUrl
+        private readonly getSignedUrl: typeof gsu,
         ) {
     }
 

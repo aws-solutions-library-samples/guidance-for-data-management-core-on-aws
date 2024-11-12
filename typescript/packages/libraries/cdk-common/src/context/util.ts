@@ -23,13 +23,11 @@ const tryGetBooleanContext = (app: App, contextName: string, defaultValue: boole
 
 function getOrThrow(app: App, name: string): string {
 	const attribute = app.node.tryGetContext(name) as string;
-	if (attribute === undefined) {
+	// have to cater for undefined strings passed via the CLI
+	if (attribute === undefined || attribute === 'undefined') {
 		throw new Error(`'${name}' is required`);
 	}
 	return attribute;
 }
 
-export {
-	tryGetBooleanContext,
-	getOrThrow,
-};
+export { tryGetBooleanContext, getOrThrow };

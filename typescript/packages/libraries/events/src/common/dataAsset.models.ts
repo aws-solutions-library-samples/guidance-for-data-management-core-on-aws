@@ -1,4 +1,4 @@
-import type { OpenLineageBuilder } from "../open-lineage/builder"
+import type { OpenLineageBuilder } from "../open-lineage/builder.js"
 
 export type DataAssetCatalog = {
     domainId: string,

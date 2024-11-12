@@ -168,7 +168,7 @@ export class OpenLineage extends Construct {
                     }
                 };
               `),
-            runtime: Runtime.NODEJS_18_X
+            runtime: Runtime.NODEJS_20_X
         });
 
         const customResourceProvider = new cr.Provider(this, 'TransformLowerLambdaCrProvider', {

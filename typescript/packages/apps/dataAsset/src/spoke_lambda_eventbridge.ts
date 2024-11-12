@@ -1,11 +1,11 @@
 import type { Callback, Context, EventBridgeHandler } from 'aws-lambda';
 import type { AwilixContainer } from 'awilix';
 import type { FastifyInstance } from 'fastify';
-import { buildLightApp } from './app.light';
+import { buildLightApp } from './app.light.js';
 import { CrawlerStateChangeEvent, DATA_BREW_JOB_STATE_CHANGE, DATA_QUALITY_EVALUATION_RESULTS_AVAILABLE, DataQualityResultsAvailableEvent, GLUE_CRAWLER_STATE_CHANGE, JobStateChangeEvent } from '@df/events';
 import type { JobEventProcessor } from './events/spoke/job.eventProcessor.js';
-import type { GlueCrawlerEventProcessor } from './events/spoke/glueCrawler.eventProcessor';
-import type { DataQualityProfileEventProcessor } from "./events/spoke/dataQualityProfile.eventProcessor";
+import type { GlueCrawlerEventProcessor } from './events/spoke/glueCrawler.eventProcessor.js';
+import type { DataQualityProfileEventProcessor } from "./events/spoke/dataQualityProfile.eventProcessor.js";
 
 const app: FastifyInstance = await buildLightApp();
 const di: AwilixContainer = app.diContainer;
@@ -32,7 +32,7 @@ export const handler: EventBridgeHandler<string, EventDetails, void> = async (ev
         await dataQualityEventProcessor.dataQualityProfileCompletionEvent(event as unknown as DataQualityResultsAvailableEvent);
         // any other events are not handled
     } else {
-		app.log.error(`EventBridgeLambda > handler > Unimplemented event: ${JSON.stringify(event)}`);
+		app.log.error(`SpokeEventBridgeLambda > handler > Unimplemented event: ${JSON.stringify(event)}`);
 	}
 	app.log.info(`EventBridgeLambda > handler >exit`);
 

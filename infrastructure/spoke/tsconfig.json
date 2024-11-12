@@ -1,5 +1,5 @@
 {
-	"extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+	"extends": "@tsconfig/node20/tsconfig.json",
 	"compilerOptions": {
 		"outDir": "dist",
 		"rootDir": "src",
@@ -11,9 +11,9 @@
 		"sourceMap": true,
 		"esModuleInterop": true,
 		"ignoreDeprecations": "5.0",
+		"noPropertyAccessFromIndexSignature": false,
 		// overrides of extends
 		"strict": false,
-		"strictNullChecks": true,
 		"exactOptionalPropertyTypes": false
 	},
 	"include": [

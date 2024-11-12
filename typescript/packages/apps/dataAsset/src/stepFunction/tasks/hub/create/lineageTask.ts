@@ -9,7 +9,7 @@ export class LineageTask {
         private log: BaseLogger,
         private sfnClient: SFNClient,
         private eventBusName: string,
-        private eventPublisher: EventPublisher,
+        private eventPublisher: EventPublisher
     ) {
     }
 

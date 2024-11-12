@@ -1,4 +1,4 @@
-import type { DataAssetJobStartEvent, DataAssetJobCompletionEvent, DataAssetCreateCompletionEvent } from "../common/dataAsset.models";
+import type { DataAssetJobStartEvent, DataAssetJobCompletionEvent, DataAssetCreateCompletionEvent } from "../common/dataAsset.models.js";
 
 export interface dataAssetSpokeJobStartEvent {
     account: string,

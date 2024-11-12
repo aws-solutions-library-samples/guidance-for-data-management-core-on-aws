@@ -35,7 +35,7 @@ export class S3Spoke extends Construct {
 			enforceSSL: true,
 			autoDeleteObjects: props.deleteBucket,
 			versioned: !props.deleteBucket,
-			serverAccessLogsPrefix: 'access-logs',
+			serverAccessLogsPrefix: 'access-logs/',
 			removalPolicy: props.deleteBucket ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
 		});
 

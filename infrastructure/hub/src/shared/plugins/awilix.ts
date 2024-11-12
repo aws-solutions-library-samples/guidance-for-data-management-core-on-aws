@@ -12,15 +12,10 @@
  */
 
 import awilix, {  asValue } from 'awilix';
-import pino, { Logger } from 'pino';
-import pretty from 'pino-pretty';
+import { pino, type BaseLogger, type LoggerOptions } from 'pino';
 
-const logger: Logger = pino(
-	pretty({
-		colorize: true,
-		translateTime: 'HH:MM:ss Z',
-		ignore: 'pid,hostname',
-	})
+
+const logger: BaseLogger = pino(
 );
 
 // Create the container and set the injectionMode to PROXY (which is also the default).

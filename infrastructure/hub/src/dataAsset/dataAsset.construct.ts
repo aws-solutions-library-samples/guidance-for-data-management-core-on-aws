@@ -3,7 +3,7 @@ import { CfnEventBusPolicy, EventBus, Rule } from 'aws-cdk-lib/aws-events';
 import { Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { AttributeType, BillingMode, ProjectionType, Table, TableEncryption } from 'aws-cdk-lib/aws-dynamodb';
+import { AttributeType, BillingMode, Table, TableEncryption } from 'aws-cdk-lib/aws-dynamodb';
 import { Aspects, Duration, RemovalPolicy, Stack } from 'aws-cdk-lib';
 import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import { AccessLogFormat, AuthorizationType, CfnMethod, CognitoUserPoolsAuthorizer, Cors, EndpointType, LambdaRestApi, LogGroupLogDestination, MethodLoggingLevel } from 'aws-cdk-lib/aws-apigateway';
@@ -13,7 +13,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { NagSuppressions } from 'cdk-nag';
 import { AnyPrincipal, ArnPrincipal, Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
-import { DATA_ASSET_HUB_EVENT_SOURCE, DATA_ASSET_SPOKE_CREATE_REQUEST_EVENT, DATA_ASSET_SPOKE_CREATE_RESPONSE_EVENT, DATA_ASSET_SPOKE_EVENT_SOURCE, DATA_ZONE_DATA_SOURCE_RUN_FAILED, DATA_ZONE_DATA_SOURCE_RUN_SUCCEEDED, DATA_ZONE_EVENT_SOURCE } from '@df/events';
+import { DATA_ASSET_HUB_EVENT_SOURCE, DATA_ASSET_SPOKE_CREATE_REQUEST_EVENT, DATA_ASSET_SPOKE_CREATE_RESPONSE_EVENT, DATA_ASSET_SPOKE_EVENT_SOURCE, DATA_ZONE_DATA_SOURCE_RUN_FAILED, DATA_ZONE_DATA_SOURCE_RUN_SUCCEEDED, DATA_ZONE_EVENT_SOURCE, STEP_FUNCTION_EVENT_SOURCE, STEP_FUNCTION_STATUS_CHANGE } from '@df/events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { Choice, Condition, DefinitionBody, IntegrationPattern, JsonPath, LogLevel, StateMachine, TaskInput, Timeout, Wait, WaitTime } from 'aws-cdk-lib/aws-stepfunctions';
@@ -63,28 +63,10 @@ export class DataAsset extends Construct {
                 name: 'pk',
                 type: AttributeType.STRING,
             },
-            sortKey: {
-                name: 'sk',
-                type: AttributeType.STRING,
-            },
             billingMode: BillingMode.PAY_PER_REQUEST,
             encryption: TableEncryption.AWS_MANAGED,
             pointInTimeRecovery: true,
             removalPolicy: RemovalPolicy.DESTROY
-        });
-
-        // define GSI1
-        table.addGlobalSecondaryIndex({
-            indexName: 'siKey1-sk-index',
-            partitionKey: {
-                name: 'siKey1',
-                type: AttributeType.STRING,
-            },
-            sortKey: {
-                name: 'sk',
-                type: AttributeType.STRING,
-            },
-            projectionType: ProjectionType.KEYS_ONLY,
         });
 
         this.tableName = table.tableName;
@@ -121,9 +103,10 @@ export class DataAsset extends Construct {
         /**
          * DCreate State Machine
          */
-        const SFNSendTaskSuccessPolicy = new PolicyStatement({
+        const SFNSendTaskPolicy = new PolicyStatement({
             actions: [
                 'states:SendTaskSuccess',
+                'states:SendTaskFailure',
                 'iam:PassRole',
             ],
             resources: [
@@ -179,7 +162,7 @@ export class DataAsset extends Construct {
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/hub/create/start.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-startCreateFlow`,
             role: startCreateFlowLambdaRole,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -191,7 +174,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -200,7 +183,7 @@ export class DataAsset extends Construct {
             depsLockFilePath: path.join(__dirname, '../../../../common/config/rush/pnpm-lock.yaml'),
             architecture: getLambdaArchitecture(scope)
         });
-        startCreateFlowLambda.addToRolePolicy(SFNSendTaskSuccessPolicy);
+        startCreateFlowLambda.addToRolePolicy(SFNSendTaskPolicy);
         eventBus.grantPutEventsTo(startCreateFlowLambda);
         startCreateFlowLambda.addToRolePolicy(DataZoneDataSourcePolicy);
         const startCreateFlowDataZonePolicy = new PolicyStatement({
@@ -254,7 +237,7 @@ export class DataAsset extends Construct {
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/hub/create/createDataSource.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-createDataSource`,
             role: createDataSourceLambdaRole,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -265,7 +248,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -274,7 +257,7 @@ export class DataAsset extends Construct {
             depsLockFilePath: path.join(__dirname, '../../../../common/config/rush/pnpm-lock.yaml'),
             architecture: getLambdaArchitecture(scope)
         });
-        createDataSourceLambda.addToRolePolicy(SFNSendTaskSuccessPolicy);
+        createDataSourceLambda.addToRolePolicy(SFNSendTaskPolicy);
         createDataSourceLambda.addToRolePolicy(DataZoneDataSourcePolicy);
         const createDataSourceDataZonePolicy = new PolicyStatement({
             effect: Effect.ALLOW,
@@ -316,7 +299,7 @@ export class DataAsset extends Construct {
             description: 'Create the default datazone project and metadata forms if necessary',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/hub/create/createProject.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-createProject`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -327,7 +310,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -336,7 +319,7 @@ export class DataAsset extends Construct {
             depsLockFilePath: path.join(__dirname, '../../../../common/config/rush/pnpm-lock.yaml'),
             architecture: getLambdaArchitecture(scope)
         });
-        createProjectLambda.addToRolePolicy(SFNSendTaskSuccessPolicy);
+        createProjectLambda.addToRolePolicy(SFNSendTaskPolicy);
         createProjectLambda.addToRolePolicy(DataZoneProjectPolicy);
 
         const createProjectTask = new LambdaInvoke(this, 'CreateProjectTask', {
@@ -380,7 +363,7 @@ export class DataAsset extends Construct {
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/hub/create/verifyDataSource.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-verifyDataSource`,
             role: verifyDataSourceLambdaRole,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -392,7 +375,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -456,7 +439,7 @@ export class DataAsset extends Construct {
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/hub/create/runDataSource.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-runDataSource`,
             role: runDataSourceLambdaRole,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -470,7 +453,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -479,7 +462,7 @@ export class DataAsset extends Construct {
             depsLockFilePath: path.join(__dirname, '../../../../common/config/rush/pnpm-lock.yaml'),
             architecture: getLambdaArchitecture(scope)
         });
-        runDataSourceLambda.addToRolePolicy(SFNSendTaskSuccessPolicy);
+        runDataSourceLambda.addToRolePolicy(SFNSendTaskPolicy);
         runDataSourceLambda.addToRolePolicy(DataZoneDataSourcePolicy);
         bucket.grantPut(runDataSourceLambda);
 
@@ -521,7 +504,7 @@ export class DataAsset extends Construct {
             description: 'Asset Manager Handler for publishing asset lineage',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/hub/create/lineage.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-publishLineage`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -532,7 +515,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -541,8 +524,9 @@ export class DataAsset extends Construct {
             depsLockFilePath: path.join(__dirname, '../../../../common/config/rush/pnpm-lock.yaml'),
             architecture: getLambdaArchitecture(scope)
         });
-        publishLineageLambda.addToRolePolicy(SFNSendTaskSuccessPolicy);
+        publishLineageLambda.addToRolePolicy(SFNSendTaskPolicy);
         eventBus.grantPutEventsTo(publishLineageLambda);
+        table.grantReadWriteData(publishLineageLambda);
 
         const lineageTask = new LambdaInvoke(this, 'PublishLineageTask', {
             lambdaFunction: publishLineageLambda,
@@ -600,7 +584,7 @@ export class DataAsset extends Construct {
             description: `Data Asset API`,
             role: apiLambdaExecutionRole,
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/lambda_apiGateway.ts'),
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -620,7 +604,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -720,7 +704,7 @@ export class DataAsset extends Construct {
                 }
             }
         });
-
+        
 
         apigw.node.addDependency(apiLambda);
         this.apiUrl = apigw.url;
@@ -768,7 +752,7 @@ export class DataAsset extends Construct {
             description: `Hub Event Handler`,
             role: eventProcessorLambdaRole,
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/hub_lambda_eventbridge.ts'),
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             functionName: `${namePrefix}-dataAsset-hubEventProcessor`,
             timeout: Duration.seconds(30),
@@ -789,7 +773,7 @@ export class DataAsset extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -803,7 +787,7 @@ export class DataAsset extends Construct {
         table.grantReadWriteData(hubEventProcessorLambda);
         hubEventProcessorLambda.addToRolePolicy(DataZoneAssetReadPolicy);
         hubEventProcessorLambda.addToRolePolicy(DataZoneAssetWritePolicy);
-        hubEventProcessorLambda.addToRolePolicy(SFNSendTaskSuccessPolicy);
+        hubEventProcessorLambda.addToRolePolicy(SFNSendTaskPolicy);
         hubEventProcessorLambda.addToRolePolicy(DataZoneDataSourcePolicy);
         bucket.grantPut(hubEventProcessorLambda);
         bucket.grantRead(hubEventProcessorLambda);
@@ -891,7 +875,26 @@ export class DataAsset extends Construct {
             }
         });
 
+        // Rule for Step Function success/failure events
+        const hubStepFunctionEventRule = new Rule(this, 'hubStepFunctionEventRule', {
+            eventPattern: {
+                source: [STEP_FUNCTION_EVENT_SOURCE],
+                detailType: [STEP_FUNCTION_STATUS_CHANGE],
+                detail: {
+                    stateMachineArn: [this.createStateMachineArn]
+                }
+            }
+        });
+
         dataSourceEventRule.addTarget(
+            new LambdaFunction(hubEventProcessorLambda, {
+                deadLetterQueue: deadLetterQueue,
+                maxEventAge: Duration.minutes(5),
+                retryAttempts: 2
+            })
+        );
+
+        hubStepFunctionEventRule.addTarget(
             new LambdaFunction(hubEventProcessorLambda, {
                 deadLetterQueue: deadLetterQueue,
                 maxEventAge: Duration.minutes(5),

@@ -54,7 +54,7 @@ export class DataLineage extends Construct {
         const lineageIngestionEventLambda = new NodejsFunction(this, 'LineageIngestionEventLambda', {
             description: `Data Lineage Ingestion Event Handler`,
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataLineage/src/lambda_eventbridge.ts'),
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             functionName: `${namePrefix}-dataLineage-ingestion-event`,
             timeout: Duration.seconds(30),
@@ -69,7 +69,7 @@ export class DataLineage extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',

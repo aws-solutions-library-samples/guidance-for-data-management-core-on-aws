@@ -1,51 +1,58 @@
 import type { BaseLogger } from 'pino';
 import { SendTaskSuccessCommand, SFNClient } from '@aws-sdk/client-sfn';
-import type { DataAssetTask } from '../../models.js';
-import { CreateDatasetCommand, CreateDatasetCommandInput, type DataBrewClient, DescribeDatasetCommand } from '@aws-sdk/client-databrew';
+import { TaskType, type DataAssetTask } from '../../models.js';
+import { CreateDatasetCommand, CreateDatasetCommandInput, type DataBrewClient, DescribeDatasetCommand, InputFormat } from '@aws-sdk/client-databrew';
 import { getConnectionType } from '../../../../common/utils.js';
-import { S3Utils } from "../../../../common/s3Utils.js";
+import { S3Utils } from '../../../../common/s3Utils.js';
 import { ConnectionTask } from './connectionTask.js';
+import { SendTaskFailureCommand } from '@aws-sdk/client-sfn';
 
 export class DataSetTask {
+	constructor(private log: BaseLogger, private sfnClient: SFNClient, private dataBrewClient: DataBrewClient, private s3Utils: S3Utils) {}
 
-	constructor(private log: BaseLogger,
-		private sfnClient: SFNClient,
-		private dataBrewClient: DataBrewClient,
-		private s3Utils: S3Utils
-	) {
+	public async process(event: DataAssetTask): Promise<any> {
+		this.log.debug(`DataSetTask > process > in > event: ${JSON.stringify(event)}`);
+
+		const id = event.dataAsset?.catalog?.assetId ? event.dataAsset.catalog.assetId : event.dataAsset.id;
+
+		try {
+			// Check if DataSet has been created for this asset before
+			try {
+				await this.dataBrewClient.send(
+					new DescribeDatasetCommand({
+						Name: `${id}-recipeDataSet`,
+					})
+				);
+			} catch (error) {
+				this.log.debug(`DataSetTask > process > in > event: ${JSON.stringify(error)}`);
+				// Create the data set if none is found
+				if ((error as Error).name === 'ResourceNotFoundException') {
+					const input = this.constructInputCommand(event);
+					await this.dataBrewClient.send(new CreateDatasetCommand(input));
+				}
+			}
+
+			await this.sfnClient.send(new SendTaskSuccessCommand({ output: JSON.stringify(event), taskToken: event.execution.taskToken }));
+		} catch (error) {
+			// We fail the task if any errors are encountered at this stage
+			this.log.error(`DataSetTask > process  > encountered unrecoverable error transitioning to a failed state: ${JSON.stringify(error)}`);
+
+			const asset: DataAssetTask = {
+				dataAsset: event.dataAsset,
+			};
+			await this.s3Utils.putTaskData(TaskType.DataSetTask, id, asset);
+			const signedUrl = await this.s3Utils.getTaskDataSignedUrl(TaskType.DataSetTask, id, 3600);
+			await this.sfnClient.send(new SendTaskFailureCommand({ error: error.name, cause: JSON.stringify({ signedUrl, error }), taskToken: event.execution.taskToken }));
+		}
+
+		this.log.debug(`DataSetTask > process > exit:`);
 	}
 
+	private constructInputCommand(event: DataAssetTask): CreateDatasetCommandInput {
+		this.log.debug(`DataSetTask > constructInputCommand > in > event: ${JSON.stringify(event)}`);
+		const connectionType = getConnectionType(event.dataAsset.workflow);
 
-    public async process(event: DataAssetTask): Promise<any> {
-        this.log.debug(`DataSetTask > process > in > event: ${JSON.stringify(event)}`);
-
-        const id = (event.dataAsset?.catalog?.assetId) ? event.dataAsset.catalog.assetId : event.dataAsset.id;
-
-		// Check if DataSet has been created for this asset before
-		try {
-			await this.dataBrewClient.send(new DescribeDatasetCommand({
-				Name: `${id}-recipeDataSet`
-			}));
-		} catch (error) {
-			this.log.debug(`DataSetTask > process > in > event: ${JSON.stringify(error)}`);
-			// Create the data set if none is found
-			if((error as Error).name ==='ResourceNotFoundException'){
-				const input = this.constructInputCommand(event);
-				await this.dataBrewClient.send(new CreateDatasetCommand(input));
-			}
-		}
-		
-		await this.sfnClient.send(new SendTaskSuccessCommand({ output: JSON.stringify(event), taskToken: event.execution.taskToken }));
-
-        this.log.debug(`DataSetTask > process > exit:`);
-
-    }
-
-    private constructInputCommand(event: DataAssetTask): CreateDatasetCommandInput {
-        this.log.debug(`DataSetTask > constructInputCommand > in > event: ${JSON.stringify(event)}`);
-        const connectionType = getConnectionType(event.dataAsset.workflow);
-
-		const id = (event.dataAsset?.catalog?.assetId) ? event.dataAsset.catalog.assetId : event.dataAsset.id;
+		const id = event.dataAsset?.catalog?.assetId ? event.dataAsset.catalog.assetId : event.dataAsset.id;
 
 		let input: CreateDatasetCommandInput = {
 			Name: `${id}-recipeDataSet`,
@@ -54,18 +61,18 @@ export class DataSetTask {
 				projectId: event.dataAsset.catalog.projectId,
 				assetName: event.dataAsset.catalog.assetName,
 				assetId: event.dataAsset.catalog.assetId,
-				id: event.dataAsset.id
+				id: event.dataAsset.id,
 			},
-			Input: {}
+			Input: {},
 		};
 
-        switch (connectionType) {
+		switch (connectionType) {
 			case 'dataLake':
 				input.Input = {
-					S3InputDefinition: S3Utils.extractObjectDetailsFromUri(event.dataAsset.workflow.dataset.connection.dataLake.s3.path)
-                }
-				input.Format = event.dataAsset.workflow.dataset.format.toUpperCase()
-                break;
+					S3InputDefinition: S3Utils.extractObjectDetailsFromUri(event.dataAsset.workflow.dataset.connection.dataLake.s3.path),
+				};
+				input.Format = event.dataAsset.workflow.dataset.format.toUpperCase() as InputFormat;
+				break;
 			case 'glue':
 				const glue = event.dataAsset.workflow.dataset.connection.glue;
 				input.Input = {
@@ -73,8 +80,8 @@ export class DataSetTask {
 						CatalogId: glue.accountId,
 						DatabaseName: glue.databaseName,
 						TableName: glue.tableName,
-					}
-				}
+					},
+				};
 				break;
 			case 'redshift':
 				const dataSetTempDirectory = this.s3Utils.getRecipeDataSetTempLocation(id, event.dataAsset.catalog.domainId, event.dataAsset.catalog.projectId);
@@ -83,20 +90,17 @@ export class DataSetTask {
 						GlueConnectionName: ConnectionTask.getConnectionName(event),
 						DatabaseTableName: event.dataAsset.workflow.dataset.connection.redshift.databaseTableName, // Supply or generate
 						// QueryString: event.dataAsset.workflow.dataset.connection.redshift.queryString, // Optional or table name
-						TempDirectory: dataSetTempDirectory
-					}
-				}
+						TempDirectory: dataSetTempDirectory,
+					},
+				};
 				break;
 
-            // Support for other connection types is to be implemented
-            default:
-                this.log.error(`Connection Type: ${connectionType} is not supported !!!`)
-                break;
-
-        }
-        this.log.debug(`DataSetTask > constructInputCommand > exit`);
-        return input;
-
-    }
-
+			// Support for other connection types is to be implemented
+			default:
+				this.log.error(`Connection Type: ${connectionType} is not supported !!!`);
+				break;
+		}
+		this.log.debug(`DataSetTask > constructInputCommand > exit`);
+		return input;
+	}
 }

@@ -124,8 +124,8 @@ export class CreateDataSourceTask {
 									expression: event.dataAsset.execution.glueTableName,
 								}]
 							}
-
-						]
+						],
+						autoImportDataQualityResult: true
 					}
 				}
 

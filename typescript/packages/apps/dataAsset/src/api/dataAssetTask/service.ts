@@ -48,18 +48,17 @@ export class DataAssetTasksService {
     
         const fullAsset: DataAssetTaskResource = {
             id: ulid().toLowerCase(),
+            status: 'RUNNING',
             idcUserId: identityStoreUserId.UserId,
             catalog: asset.catalog,
             workflow: asset.workflow
         }
 
-
         const domain = await this.dataZoneClient.send(new GetDomainCommand({identifier: asset.catalog.domainId}));
         fullAsset.catalog.domainName = domain.name;
 
-
         await this.sfnClient.send(new StartExecutionCommand({stateMachineArn: this.createAssetStateMachineArn, input: JSON.stringify(fullAsset)}));
-        await this.dataAssetTaskRepository.create(securityContext.userId, fullAsset);
+        await this.dataAssetTaskRepository.create(fullAsset);
 
         this.log.debug(`DataAssetTaskService >  create > exit`);
         return fullAsset;
@@ -72,7 +71,7 @@ export class DataAssetTasksService {
         validateNotEmpty(securityContext.userId, "securityContext.userId");
         validateNotEmpty(dataAssetId, "dataAssetId");
 
-        const dataAsset = await this.dataAssetTaskRepository.get(securityContext.userId, dataAssetId);
+        const dataAsset = await this.dataAssetTaskRepository.get(dataAssetId);
         if (!dataAsset) {
             throw new NotFoundError(`Data Asset Task ${dataAssetId} not found`)
         }
@@ -86,7 +85,7 @@ export class DataAssetTasksService {
         validateNotEmpty(securityContext, "securityContext");
         validateNotEmpty(securityContext.userId, "securityContext.userId");
 
-        const [tasks, lastEvaluatedKey] = await this.dataAssetTaskRepository.list(securityContext.userId, options);
+        const [tasks, lastEvaluatedKey] = await this.dataAssetTaskRepository.list(options);
         this.log.debug(`DataAssetTaskService > list > exit`);
         return [tasks, lastEvaluatedKey ? lastEvaluatedKey : undefined]
     }

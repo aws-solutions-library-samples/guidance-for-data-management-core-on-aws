@@ -14,7 +14,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 import type { SecurityContext } from '../common/scopes.js';
-import jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 export type Identities = {
     dateCreated: string;
@@ -91,7 +91,7 @@ export const authzPlugin = fp(async (app: any): Promise<void> => {
             }
 
             let jws = req.headers.authorization?.replace('Bearer ', '');
-            const decodedToken = jwt_decode<CognitoAuthToken>(jws);
+            const decodedToken = jwtDecode<CognitoAuthToken>(jws);
             app.log.warn('authz> onRequest> missing or malformed authorization token.');
             /*
              * Semgrep issue :  https://sg.run/wx8x

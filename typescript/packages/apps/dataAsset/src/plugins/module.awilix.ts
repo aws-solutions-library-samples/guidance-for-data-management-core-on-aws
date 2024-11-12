@@ -21,14 +21,13 @@ import { DataBrewClient } from '@aws-sdk/client-databrew';
 import { SecretsManagerClient } from "@aws-sdk/client-secrets-manager";
 import { S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import type { MetadataBearer, RequestPresigningArguments } from '@aws-sdk/types';
-import type { Client, Command } from '@aws-sdk/smithy-client';
 import { ulid } from 'ulid';
 import { StartTask as HubCreateStartTask } from '../stepFunction/tasks/hub/create/startTask.js';
 import { StartTask as SpokeCreateStartTask } from '../stepFunction/tasks/spoke/create/startTask.js';
 import { SpokeResponseTask } from '../stepFunction/tasks/hub/create/spokeResponseTask.js';
 import { LineageTask as HubLineageTask } from '../stepFunction/tasks/hub/create/lineageTask.js';
 import { LineageTask as SpokeLineageTask } from '../stepFunction/tasks/spoke/create/lineageTask.js';
+import { FailureTask as SpokeFailureTask } from '../stepFunction/tasks/spoke/create/failureTask.js';
 import { CreateDataSourceTask } from '../stepFunction/tasks/hub/create/createDataSourceTask.js';
 import { SSMClient } from '@aws-sdk/client-ssm';
 import { RecipeJobTask } from '../stepFunction/tasks/spoke/create/recipeJobTask.js';
@@ -40,23 +39,19 @@ import { EventProcessor as HubEventProcessor } from "../events/hub/eventProcesso
 import { S3Utils } from "../common/s3Utils.js";
 import { DataAssetTasksService } from "../api/dataAssetTask/service.js";
 import { DataAssetTaskRepository } from "../api/dataAssetTask/repository.js";
+import { DataAssetTaskStatusRepository } from "../events/hub/taskRepository.js";
 import { DynamoDBDocumentClient, TranslateConfig } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { IdentitystoreClient } from "@aws-sdk/client-identitystore";
 import { JobEventProcessor } from "../events/spoke/job.eventProcessor.js";
 import { DataZoneEventProcessor } from '../events/hub/datazone.eventProcessor.js';
+import { StepFunctionsEventProcessor } from '../events/hub/stepfunctions.eventProcessor.js';
 import { VerifyDataSourceTask } from '../stepFunction/tasks/hub/create/verifyDataSourceTask.js';
 import { RunDataSourceTask } from '../stepFunction/tasks/hub/create/runDataSourceTask.js';
 import { CreateProjectTask } from '../stepFunction/tasks/hub/create/createProjectTask.js';
-import { ConfiguredRetryStrategy } from '@aws-sdk/util-retry';
+import { ConfiguredRetryStrategy } from '@smithy/util-retry';
 
 const {captureAWSv3Client} = pkg;
-
-export type GetSignedUrl = <InputTypesUnion extends object, InputType extends InputTypesUnion, OutputType extends MetadataBearer = MetadataBearer>(
-    client: Client<any, InputTypesUnion, MetadataBearer, any>,
-    command: Command<InputType, OutputType, any, InputTypesUnion, MetadataBearer>,
-    options?: RequestPresigningArguments
-) => Promise<string>;
 
 declare module '@fastify/awilix' {
     interface Cradle extends BaseCradle {
@@ -64,7 +59,8 @@ declare module '@fastify/awilix' {
         glueCrawlerEventProcessor: GlueCrawlerEventProcessor;
         dataQualityProfileEventProcessor: DataQualityProfileEventProcessor;
         hubEventProcessor: HubEventProcessor;
-        dataZoneEventProcessor: DataZoneEventProcessor
+        dataZoneEventProcessor: DataZoneEventProcessor;
+        stepFunctionsEventProcessor: StepFunctionsEventProcessor;
         eventBridgeClient: EventBridgeClient;
         identityStoreClientFactory: IdentityStoreClientFactory;
         dynamoDbUtils: DynamoDbUtils;
@@ -82,10 +78,11 @@ declare module '@fastify/awilix' {
         spokeEventPublisher: EventPublisher;
         dataAssetService: DataAssetService;
         dataAssetTaskRepository: DataAssetTaskRepository;
+        dataAssetTaskStatusRepository: DataAssetTaskStatusRepository;
         dataAssetTaskService: DataAssetTasksService;
         spokeS3Utils: S3Utils;
         hubS3Utils: S3Utils;
-        getSignedUrl: GetSignedUrl;
+        getSignedUrl: typeof getSignedUrl;
 
         // Hub Tasks
         hubCreateStartTask: HubCreateStartTask;
@@ -106,6 +103,7 @@ declare module '@fastify/awilix' {
         recipeJobTask: RecipeJobTask;
         glueCrawlerTask: GlueCrawlerTask;
         spokeLineageTask: SpokeLineageTask;
+        spokeFailureTask: SpokeFailureTask;
     }
 }
 
@@ -409,6 +407,17 @@ const registerContainer = (app?: FastifyInstance) => {
             }
         ),
 
+        stepFunctionsEventProcessor: asFunction(
+            (container) =>
+                new StepFunctionsEventProcessor(
+                    app.log,
+                    container.dataAssetTaskStatusRepository
+                ),
+            {
+                ...commonInjectionOptions
+            }
+        ),
+
         // Event Processors spoke
         jobEventProcessor: asFunction(
             (container) =>
@@ -459,6 +468,17 @@ const registerContainer = (app?: FastifyInstance) => {
         dataAssetTaskRepository: asFunction(
             (container) =>
                 new DataAssetTaskRepository(
+                    app.log,
+                    container.dynamoDBDocumentClient,
+                    TableName
+                ),
+            {
+                ...commonInjectionOptions,
+            }
+        ),
+        dataAssetTaskStatusRepository: asFunction(
+            (container) =>
+                new DataAssetTaskStatusRepository(
                     app.log,
                     container.dynamoDBDocumentClient,
                     TableName
@@ -560,7 +580,8 @@ const registerContainer = (app?: FastifyInstance) => {
         glueCrawlerTask: asFunction((container: Cradle) => new GlueCrawlerTask(app.log,
             container.glueClient,
             GlueDatabaseName,
-            container.spokeS3Utils
+            container.spokeS3Utils,
+            container.stepFunctionClient
         ), {
             ...commonInjectionOptions
         }),
@@ -568,6 +589,11 @@ const registerContainer = (app?: FastifyInstance) => {
         spokeLineageTask: asFunction((container: Cradle) => new SpokeLineageTask(app.log, container.stepFunctionClient, spokeEventBusName, container.spokeEventPublisher, container.spokeS3Utils, container.dataBrewClient), {
             ...commonInjectionOptions
         }),
+
+        spokeFailureTask: asFunction((container: Cradle) => new SpokeFailureTask(app.log, spokeEventBusName, container.spokeEventPublisher, container.spokeS3Utils, container.dataBrewClient), {
+            ...commonInjectionOptions
+        }),
+
 
     });
 };

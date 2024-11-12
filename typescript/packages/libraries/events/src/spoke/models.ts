@@ -2,7 +2,7 @@
  * A place holder for outgoing events sent by the Spoke
 */
 
-import type { DataAssetCatalog, DataAssetWorkflow } from "../common/dataAsset.models";
+import type { DataAssetCatalog, DataAssetWorkflow } from "../common/dataAsset.models.js";
 
 export const ACCESS_CONTROL_SPOKE_EVENT_SOURCE: string = 'com.aws.df.spoke.accessControl';
 export const DATA_LINEAGE_SPOKE_EVENT_SOURCE: string = 'com.aws.df.spoke.dataLineage';
@@ -21,6 +21,7 @@ export const DATA_ASSET_SPOKE_CREATE_RESPONSE_EVENT = `DF>${DATA_ASSET_SPOKE_EVE
 
 
 export type JobState = 'FAILED' | 'SUCCEEDED';
+export type WorkflowState = 'FAILED' | 'SUCCEEDED';
 
 export interface jobStateChangeDetail {
     jobName: string,
@@ -94,6 +95,7 @@ export interface createResponseEventDetails {
     id: string,
     catalog: DataAssetCatalog,
     workflow: DataAssetWorkflow,
+    workflowState:WorkflowState,
     hubTaskToken:string,
     fullPayloadSignedUrl: string,
     dataProfileSignedUrl: string,

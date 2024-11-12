@@ -11,9 +11,9 @@
  *  and limitations under the License.
  */
 
-import { container } from '../plugins/awilix';
+import { container } from '../plugins/awilix.js';
 import type { Logger } from 'pino';
-import type { PreTokenGenerationEvent, Profile } from './event';
+import type { PreTokenGenerationEvent, Profile } from './event.js';
 
 const logger = container.resolve<Logger>('logger');
 

@@ -60,7 +60,7 @@ For this tutorial we will call the `data asset` API. Below is the body of the re
             "connection": {
                 "dataLake": {
                     "s3": {
-                        "path": "s3://<S3 PATH>/sample_products.csv",
+                        "path": "s3://<S3 PATH>/",
                         "region": "<REGION>"
                     }
                 }

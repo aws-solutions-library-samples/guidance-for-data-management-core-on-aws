@@ -1,15 +1,14 @@
 import { describe, it } from "vitest";
 import pino from "pino";
-import { LineageTask } from "./lineageTask";
+import { LineageTask } from "./lineageTask.js";
 import { SFNClient } from "@aws-sdk/client-sfn";
 import { EventPublisher } from "@df/events";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
 
 describe('LineageTask', () => {
     let task: LineageTask;
-
     it('should emit the lineage event properly', async () => {
-        const logger = pino(
+        const logger = pino.default(
             pino.destination({
                 sync: true // test frameworks must use pino logger in sync mode!
             })

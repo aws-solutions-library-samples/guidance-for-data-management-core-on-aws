@@ -1,4 +1,4 @@
-import { buildLightApp } from '../../../../app.light';
+import { buildLightApp } from '../../../../app.light.js';
 import type { AwilixContainer } from 'awilix';
 import type { FastifyInstance } from 'fastify';
 import type { DataSetTask } from '../../../tasks/spoke/create/dataSetTask.js';

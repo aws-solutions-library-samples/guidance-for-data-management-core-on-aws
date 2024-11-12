@@ -74,8 +74,8 @@ export class SsoSeeder extends Construct {
 		const customResourceLambda = new NodejsFunction(this, 'SSOSeederLambda', {
 			functionName: `${namePrefix}-sso-seeder`,
 			description: `SSO seeder`,
-			entry: path.join(__dirname, './customResources/iamControlCenter.customResource.ts'),
-			runtime: Runtime.NODEJS_18_X,
+			entry: path.join(__dirname, './customResources/iamControlCenter.CustomResource.ts'),
+			runtime: Runtime.NODEJS_20_X,
 			tracing: Tracing.ACTIVE,
 			memorySize: 512,
 			logRetention: RetentionDays.ONE_WEEK,
@@ -83,7 +83,7 @@ export class SsoSeeder extends Construct {
 			bundling: {
 				minify: true,
 				format: OutputFormat.ESM,
-				target: 'node18.16',
+				target: 'node20',
 				sourceMap: false,
 				sourcesContent: false,
 				banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',

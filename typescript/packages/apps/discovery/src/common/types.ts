@@ -12,7 +12,7 @@
  */
 
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import { TIntersect, TLiteral, TNull, TSchema, TUnion, Type, TypeBuilder } from '@sinclair/typebox';
+import { TIntersect, TLiteral, TNull, TSchema, TUnion, Type, JsonTypeBuilder } from '@sinclair/typebox';
 import type { FastifyInstance, FastifyBaseLogger, RawReplyDefaultExpression, RawRequestDefaultExpression, RawServerDefault } from 'fastify';
 export const apiVersion100: string = '1.0.0';
 
@@ -50,7 +50,7 @@ export function convertFromTypeBoxIntersectToJSONSchema(intersectTypeBox: TInter
 	return schema;
 }
 
-export class OpenApiTypeBuilder extends TypeBuilder {
+export class OpenApiTypeBuilder extends JsonTypeBuilder {
 	public Nullable<T extends TSchema>(schema: T): TUnion<[T, TNull]> {
 		return { ...schema, nullable: true } as any;
 	}

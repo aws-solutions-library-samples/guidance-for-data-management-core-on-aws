@@ -33,7 +33,7 @@ export class Discovery extends Construct {
                     __dirname,
                     "../../../../typescript/packages/apps/discovery/src/lambda_apiGateway.ts"
                 ),
-                runtime: lambda.Runtime.NODEJS_18_X,
+                runtime: lambda.Runtime.NODEJS_20_X,
                 tracing: lambda.Tracing.ACTIVE,
                 memorySize: 512,
                 logRetention: logs.RetentionDays.ONE_WEEK,
@@ -43,7 +43,7 @@ export class Discovery extends Construct {
                 bundling: {
                     minify: true,
                     format: lambdaNode.OutputFormat.ESM,
-                    target: "node18.16",
+                    target: "node20",
                     sourceMap: false,
                     sourcesContent: false,
                     banner:

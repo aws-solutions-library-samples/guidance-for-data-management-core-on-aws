@@ -4,7 +4,7 @@ import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Code, Runtime, SingletonFunction } from 'aws-cdk-lib/aws-lambda';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { CustomResource, Duration } from 'aws-cdk-lib/core';
-import type { Seeds } from './seeds';
+import type { Seeds } from './seeds.js';
 import { Construct } from 'constructs';
 import { fileURLToPath } from 'url';
 
@@ -33,7 +33,7 @@ export class DynamoDBSeeder extends Construct {
 
 		const handler = new SingletonFunction(this, 'CustomResourceHandler', {
 			uuid: 'Custom::DynamodbSeeder',
-			runtime: Runtime.NODEJS_18_X,
+			runtime: Runtime.NODEJS_20_X,
 			code: Code.fromAsset(path.join(__dirname, 'lambdas')),
 			handler: 'index.handler',
 			lambdaPurpose: 'Custom::DynamodbSeeder',

@@ -1,9 +1,10 @@
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
-import {RemovalPolicy, Duration, Stack} from 'aws-cdk-lib';
+import { RemovalPolicy, Duration, Stack } from 'aws-cdk-lib';
 
 export interface S3ConstructProperties {
 	deleteBucket: boolean;
+	accessLogBucketName: string;
 }
 
 export const bucketNameParameter = `/df/shared/bucketName`;
@@ -19,7 +20,7 @@ export class S3 extends Construct {
 		const accountId = Stack.of(this).account;
 		const region = Stack.of(this).region;
 		const bucketName = `df-${accountId}-${region}-hub`;
-
+		const accessLogBucket = s3.Bucket.fromBucketName(this, 'accessLogBucket', props.accessLogBucketName);
 
 		const bucket = new s3.Bucket(this, 'dfBucket', {
 			bucketName: bucketName,
@@ -28,16 +29,19 @@ export class S3 extends Construct {
 				{
 					name: 'archive',
 					archiveAccessTierTime: Duration.days(90),
-					deepArchiveAccessTierTime: Duration.days(180)
-				}
+					deepArchiveAccessTierTime: Duration.days(180),
+				},
 			],
 			blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
 			enforceSSL: true,
 			autoDeleteObjects: props.deleteBucket,
 			versioned: !props.deleteBucket,
-			serverAccessLogsPrefix: 'access-logs',
+			serverAccessLogsBucket: accessLogBucket,
+			serverAccessLogsPrefix: `${bucketName}/access-logs/`,
 			removalPolicy: props.deleteBucket ? RemovalPolicy.DESTROY : RemovalPolicy.RETAIN,
 		});
+
+		bucket.node.addDependency(accessLogBucket);
 
 		this.bucketArn = bucket.bucketArn;
 		this.bucketName = bucket.bucketName;

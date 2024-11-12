@@ -65,7 +65,8 @@ export class DataAssetSpoke extends Construct {
 
         const StateMachinePolicy = new PolicyStatement({
             actions: [
-                'states:SendTaskSuccess'
+                'states:SendTaskSuccess',
+                'states:SendTaskFailure'
             ],
             resources: [
                 `arn:aws:states:${region}:${accountId}:stateMachine:${namePrefix}-*`,
@@ -183,7 +184,7 @@ export class DataAssetSpoke extends Construct {
             description: 'Asset Manager Connection creator Task Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/start.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-create-startTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -196,7 +197,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -213,7 +214,7 @@ export class DataAssetSpoke extends Construct {
             description: 'Asset Manager Connection creator Task Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/connection.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-connectionCreationTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -224,7 +225,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -238,12 +239,14 @@ export class DataAssetSpoke extends Construct {
         createConnectionLambda.addToRolePolicy(IAMPassRolePolicy);
         createConnectionLambda.addToRolePolicy(GluePolicy);
         createConnectionLambda.addToRolePolicy(SecretsManagerPolicy);
+        bucket.grantPut(createConnectionLambda);
+        bucket.grantRead(createConnectionLambda);
 
         const createDataSetLambda = new NodejsFunction(this, 'CreateDataSetLambda', {
             description: 'Asset Manager dataset creator Task Handler',
-            entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/dataset.handler.ts'),
+            entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/dataSet.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-createDataSetTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -256,7 +259,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -270,6 +273,8 @@ export class DataAssetSpoke extends Construct {
         createDataSetLambda.addToRolePolicy(DataBrewPolicy);
         createDataSetLambda.addToRolePolicy(IAMPassRolePolicy);
         createDataSetLambda.addToRolePolicy(GluePolicy);
+        bucket.grantPut(createDataSetLambda);
+        bucket.grantRead(createDataSetLambda);
 
         new CfnPermissions(this, 'CreateDataSetLambdaPermissions', {
             dataLakePrincipal: {
@@ -288,9 +293,9 @@ export class DataAssetSpoke extends Construct {
 
         const createProfileDataSetLambda = new NodejsFunction(this, 'CreateProfileDataSetLambda', {
             description: 'Asset Manager profile dataset creator Task Handler',
-            entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/profileDataset.handler.ts'),
+            entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/profileDataSet.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-createProfileDataSetTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -304,7 +309,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -318,6 +323,8 @@ export class DataAssetSpoke extends Construct {
         createProfileDataSetLambda.addToRolePolicy(DataBrewPolicy);
         createProfileDataSetLambda.addToRolePolicy(IAMPassRolePolicy);
         createProfileDataSetLambda.addToRolePolicy(GluePolicy);
+        bucket.grantPut(createProfileDataSetLambda);
+        bucket.grantRead(createProfileDataSetLambda);
 
         new CfnPermissions(this, 'CreateProfileDataSetLambdaPermissions', {
             dataLakePrincipal: {
@@ -337,7 +344,7 @@ export class DataAssetSpoke extends Construct {
             description: 'Asset Manager Recipe job Task Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/recipeJob.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-recipeJobTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -350,7 +357,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -366,6 +373,8 @@ export class DataAssetSpoke extends Construct {
         recipeJobLambda.addToRolePolicy(IAMPassRolePolicy);
         recipeJobLambda.addToRolePolicy(GluePolicy);
         bucket.grantPut(recipeJobLambda);
+        bucket.grantRead(recipeJobLambda);
+
         new CfnPermissions(this, 'RecipeJobLambdaPermissions', {
             dataLakePrincipal: {
                 dataLakePrincipalIdentifier: recipeJobLambda.role?.roleArn,
@@ -384,7 +393,7 @@ export class DataAssetSpoke extends Construct {
             description: 'Asset Manager profile job Task Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/profileJob.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-profileJobTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -398,7 +407,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -415,6 +424,7 @@ export class DataAssetSpoke extends Construct {
         profileJobLambda.addToRolePolicy(IAMPassRolePolicy);
         profileJobLambda.addToRolePolicy(GluePolicy);
         bucket.grantPut(profileJobLambda);
+        bucket.grantRead(profileJobLambda);
 
         new CfnPermissions(this, 'ProfileJobLambdaPermissions', {
             dataLakePrincipal: {
@@ -434,7 +444,7 @@ export class DataAssetSpoke extends Construct {
             description: 'Asset Manager DQ profile job Task Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/dataQualityProfileJob.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-dqProfileJobTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -449,7 +459,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -468,6 +478,8 @@ export class DataAssetSpoke extends Construct {
         dqProfileJobLambda.addToRolePolicy(IAMPassRolePolicy);
         dqProfileJobLambda.addToRolePolicy(GluePolicy);
         bucket.grantPut(dqProfileJobLambda);
+        bucket.grantRead(dqProfileJobLambda);
+
         new CfnPermissions(this, 'DQProfileJobLambdaLakeFormationPermissions', {
             dataLakePrincipal: {
                 dataLakePrincipalIdentifier: dqProfileJobLambda.role?.roleArn,
@@ -486,7 +498,7 @@ export class DataAssetSpoke extends Construct {
             description: 'Asset Manager Glue Crawler Task Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/glueCrawler.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-glueCrawlerTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -500,7 +512,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -515,12 +527,13 @@ export class DataAssetSpoke extends Construct {
         glueCrawlerLambda.addToRolePolicy(IAMPassRolePolicy);
         glueCrawlerLambda.addToRolePolicy(GluePolicy);
         bucket.grantPut(glueCrawlerLambda);
+        bucket.grantRead(glueCrawlerLambda);
 
         const spokeLineageLambda = new NodejsFunction(this, 'SpokeLineageLambda', {
             description: 'Asset Manager Spoke Lineage Task Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/lineage.handler.ts'),
             functionName: `${namePrefix}-${props.moduleName}-ineageTask`,
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
@@ -534,7 +547,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -550,6 +563,55 @@ export class DataAssetSpoke extends Construct {
         bucket.grantPut(spokeLineageLambda);
         bucket.grantRead(spokeLineageLambda);
 
+        const spokeFailureLambda = new NodejsFunction(this, 'SpokeFailureLambda', {
+            description: 'Asset Manager Spoke Failure Task Handler',
+            entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/stepFunction/handlers/spoke/create/failure.handler.ts'),
+            functionName: `${namePrefix}-${props.moduleName}-failureTask`,
+            runtime: Runtime.NODEJS_20_X,
+            tracing: Tracing.ACTIVE,
+            memorySize: 512,
+            logRetention: RetentionDays.ONE_WEEK,
+            timeout: Duration.minutes(5),
+            environment: {
+                SPOKE_EVENT_BUS_NAME: props.spokeEventBusName,
+                JOBS_BUCKET_NAME: props.bucketName,
+                JOBS_BUCKET_PREFIX: 'jobs',
+                SPOKE_GLUE_DATABASE_NAME: glueDatabase.databaseName
+            },
+            bundling: {
+                minify: true,
+                format: OutputFormat.ESM,
+                target: 'node20',
+                sourceMap: false,
+                sourcesContent: false,
+                banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
+                externalModules: ['aws-sdk', 'pg-native']
+            },
+            depsLockFilePath: path.join(__dirname, '../../../../common/config/rush/pnpm-lock.yaml'),
+            architecture: getLambdaArchitecture(scope)
+        });
+
+        spokeFailureLambda.addToRolePolicy(StateMachinePolicy);
+        spokeFailureLambda.addToRolePolicy(DataBrewPolicy);
+        spokeEventBus.grantPutEventsTo(spokeFailureLambda);
+        bucket.grantPut(spokeFailureLambda);
+        bucket.grantRead(spokeFailureLambda);
+
+        const failureTask = new LambdaInvoke(this, 'FailureTask', {
+            lambdaFunction: spokeFailureLambda,
+            taskTimeout: Timeout.duration(Duration.minutes(props.taskTimeOutMinutes)),
+            payload: TaskInput.fromObject({
+                'errorName.$': '$.Error',
+                'errorCause.$': '$.Cause',
+                'execution': {
+                    'executionStartTime.$': '$$.Execution.StartTime',
+                    'executionId.$': '$$.Execution.Id',
+                    'stateMachineArn.$': '$$.StateMachine.Id',
+                }
+            }),
+            outputPath: '$'
+        });
+
         const createStartTask = new LambdaInvoke(this, 'CreateStartTask', {
             lambdaFunction: createStartLambda,
             integrationPattern: IntegrationPattern.WAIT_FOR_TASK_TOKEN,
@@ -564,7 +626,7 @@ export class DataAssetSpoke extends Construct {
                 }
             }),
             outputPath: '$.dataAsset'
-        });
+        }).addCatch(failureTask,{errors:['States.ALL']});
 
         const createConnectionTask = new LambdaInvoke(this, 'CreateConnectionTask', {
             lambdaFunction: createConnectionLambda,
@@ -580,7 +642,7 @@ export class DataAssetSpoke extends Construct {
                 }
             }),
             outputPath: '$.dataAsset'
-        });
+        }).addCatch(failureTask,{errors:['States.ALL']});
 
         const recipeCreateDataSetTask = new LambdaInvoke(this, 'RecipeCreateDataSetTask', {
             lambdaFunction: createDataSetLambda,
@@ -596,7 +658,7 @@ export class DataAssetSpoke extends Construct {
                 }
             }),
             outputPath: '$.dataAsset'
-        });
+        }).addCatch(failureTask,{errors:['States.ALL']});
 
         const profileCreateDataSetTask = new LambdaInvoke(this, 'ProfileCreateDataSetTask', {
             lambdaFunction: createProfileDataSetLambda,
@@ -612,7 +674,7 @@ export class DataAssetSpoke extends Construct {
                 }
             }),
             outputPath: '$.dataAsset'
-        });
+        }).addCatch(failureTask,{errors:['States.ALL']});
 
         const recipeJobTask = new LambdaInvoke(this, 'RecipeJobTask', {
             lambdaFunction: recipeJobLambda,
@@ -628,7 +690,7 @@ export class DataAssetSpoke extends Construct {
                 }
             }),
             outputPath: '$.dataAsset'
-        });
+        }).addCatch(failureTask,{errors:['States.ALL']});
 
         const profileJobTask = new LambdaInvoke(this, 'ProfileJobTask', {
             lambdaFunction: profileJobLambda,
@@ -676,7 +738,7 @@ export class DataAssetSpoke extends Construct {
                 }
             }),
             outputPath: '$.dataAsset'
-        });
+        }).addCatch(failureTask,{errors:['States.ALL']});
 
 
         const lineageTask = new LambdaInvoke(this, 'LineageTask', {
@@ -693,7 +755,7 @@ export class DataAssetSpoke extends Construct {
                 }
             }),
             outputPath: '$'
-        });
+        }).addCatch(failureTask,{errors:['States.ALL']});
 
         const deadLetterQueue = new Queue(this, 'DeadLetterQueue');
         deadLetterQueue.addToResourcePolicy(new PolicyStatement({
@@ -726,7 +788,7 @@ export class DataAssetSpoke extends Construct {
                 new Choice(this, 'Data Quality Profile?')
                     .when(Condition.isPresent('$.workflow.dataQuality'), dqProfileJobTask)
                     .otherwise(new Succeed(this, 'No Data Quality Profile')))
-            .branch(profileJobTask);
+            .branch(profileJobTask).addCatch(failureTask,{errors:['States.ALL']});
 
         const transformChoice = new Choice(this, 'Is transform present Found ?')
             .otherwise(glueCrawlerTask.next(profileCreateDataSetTask.next(profilingTasks).next(lineageTask)))
@@ -790,7 +852,7 @@ export class DataAssetSpoke extends Construct {
         const eventProcessorLambda = new NodejsFunction(this, 'EventProcessorLambda', {
             description: 'Data Brew Job Completion Event Handler',
             entry: path.join(__dirname, '../../../../typescript/packages/apps/dataAsset/src/spoke_lambda_eventbridge.ts'),
-            runtime: Runtime.NODEJS_18_X,
+            runtime: Runtime.NODEJS_20_X,
             tracing: Tracing.ACTIVE,
             functionName: `${namePrefix}-dataAsset-eventProcessor`,
             timeout: Duration.seconds(30),
@@ -806,7 +868,7 @@ export class DataAssetSpoke extends Construct {
             bundling: {
                 minify: true,
                 format: OutputFormat.ESM,
-                target: 'node18.16',
+                target: 'node20',
                 sourceMap: false,
                 sourcesContent: false,
                 banner: 'import { createRequire } from \'module\';const require = createRequire(import.meta.url);import { fileURLToPath } from \'url\';import { dirname } from \'path\';const __filename = fileURLToPath(import.meta.url);const __dirname = dirname(__filename);',
@@ -880,7 +942,7 @@ export class DataAssetSpoke extends Construct {
         // Add eventBus Policy for incoming job events
         new CfnEventBusPolicy(this, 'JobEventBusPutEventPolicy', {
             eventBusName: dfSpokeEventBusName,
-            statementId: 'AllowSpokeAccountsToPutJobEvents',
+            statementId: 'SpokeAllowSpokeAccountsToPutJobEvents',
             statement: {
                 Effect: Effect.ALLOW,
                 Action: ['events:PutEvents'],
@@ -986,7 +1048,8 @@ export class DataAssetSpoke extends Construct {
                 dqProfileJobLambda,
                 recipeJobLambda,
                 glueCrawlerLambda,
-                spokeLineageLambda
+                spokeLineageLambda,
+                spokeFailureLambda
             ],
             [
                 {
@@ -1041,7 +1104,8 @@ export class DataAssetSpoke extends Construct {
                         'Resource::<DataAssetSpokeRecipeJobLambda27C4CF5E.Arn>:*',
                         'Resource::<DataAssetSpokeDQProfileJobLambda46CE9CB6.Arn>:*',
                         'Resource::<DataAssetSpokeGlueCrawlerLambda66DF909B.Arn>:*',
-                        'Resource::<DataAssetSpokeSpokeLineageLambda88C4B5EF.Arn>:*'
+                        'Resource::<DataAssetSpokeSpokeLineageLambda88C4B5EF.Arn>:*',
+                        'Resource::<DataAssetSpokeSpokeFailureLambda41836B29.Arn>:*'
                     ],
                     reason: 'this policy is required to invoke lambda specified in the state machine definition'
                 },
