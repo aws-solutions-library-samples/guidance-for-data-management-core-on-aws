@@ -1,4 +1,4 @@
-# Guidance for Data Fabric on AWS
+# Guidance for Data Management Core on AWS
 
 ## Table of Contents
 
