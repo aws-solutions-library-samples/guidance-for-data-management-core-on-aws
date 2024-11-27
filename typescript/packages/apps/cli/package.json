@@ -34,7 +34,7 @@
 		"@inquirer/confirm": "^4.0.1",
 		"@inquirer/prompts": "^6.0.1",
 		"@inquirer/select": "^3.0.1",
-		"@microsoft/rush-lib": "^5.140.1",
+		"@microsoft/rush-lib": "^5.141.2",
 		"ajv": "^8.17.1",
 		"awilix": "^10.0.2",
 		"clipboardy": "^4.0.0",
