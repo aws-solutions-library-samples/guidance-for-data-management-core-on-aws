@@ -1,6 +1,6 @@
 import type { BaseLogger } from 'pino';
 import { type DataAssetTask, TaskType } from '../../models.js';
-import { CustomDatasetInput, OpenLineageBuilder, RunEvent, EventPublisher, EventBridgeEventBuilder, DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT, DATA_LINEAGE_SPOKE_EVENT_SOURCE } from "@df/events";
+import { CustomDatasetInput, OpenLineageBuilder, RunEvent, EventPublisher, EventBridgeEventBuilder, DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT, DATA_LINEAGE_SPOKE_EVENT_SOURCE } from "@dm/events";
 import { getConnectionType } from "../../../../common/utils.js";
 import type { CreateProfileJobCommandInput, DataBrewClient } from "@aws-sdk/client-databrew";
 import { CreateProfileJobCommand, DescribeJobCommand, StartJobRunCommand, UpdateProfileJobCommand } from "@aws-sdk/client-databrew";
@@ -71,7 +71,7 @@ export class ProfileJobTask {
         // Use assetId if it exists else no asset exists so use the id
         const id = (asset.catalog?.assetId) ? asset.catalog.assetId : asset.id
 
-        const jobName = `df-${id}-dataProfile`;
+        const jobName = `dm-${id}-dataProfile`;
 
         // Create default profile job
         const command: CreateProfileJobCommandInput = {

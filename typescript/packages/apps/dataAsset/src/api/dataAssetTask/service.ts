@@ -1,11 +1,11 @@
 import type { FastifyBaseLogger } from 'fastify';
 import type { Catalog, DataAssetTaskResource, DataAssetTaskResourceListOptions, NewDataAssetTaskResource, Workflow } from './schemas.js';
-import { validateNotEmpty, validateRegularExpression } from '@df/validators';
+import { validateNotEmpty, validateRegularExpression } from '@dm/validators';
 import { ulid } from 'ulid';
 import { type SFNClient, StartExecutionCommand } from '@aws-sdk/client-sfn';
 import type { SecurityContext } from "../../common/scopes.js";
 import type { DataAssetTaskRepository } from "./repository.js";
-import { NotFoundError } from "@df/resource-api-base";
+import { NotFoundError } from "@dm/resource-api-base";
 import { DataZoneClient, GetDomainCommand } from "@aws-sdk/client-datazone";
 import {GetUserIdCommand} from "@aws-sdk/client-identitystore";
 import type { IdentityStoreClientFactory } from '../../plugins/module.awilix.js';

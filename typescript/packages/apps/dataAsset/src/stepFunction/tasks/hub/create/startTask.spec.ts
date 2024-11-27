@@ -1,7 +1,7 @@
 import { describe, it } from "vitest";
 import { StartTask } from "./startTask.js";
 import pino from "pino";
-import { EventPublisher } from "@df/events";
+import { EventPublisher } from "@dm/events";
 import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
 import { DataZoneUserAuthClientFactory } from "../../../../plugins/module.awilix.js";
 import { STSClient } from "@aws-sdk/client-sts";
@@ -41,8 +41,8 @@ describe('StartTask', () => {
                         format: "avro",
                         connection: {
                             "redshift": {
-                                "secretArn": "arn:aws:secretsmanager:us-west-2:767397875118:secret:redshift!df-redshift-test-namespace-admin-9rP6W5",
-                                "jdbcConnectionUrl": "jdbc:redshift://df-redshift-test-workgroup.767397875118.us-west-2.redshift-serverless.amazonaws.com:5439/dev",
+                                "secretArn": "arn:aws:secretsmanager:us-west-2:767397875118:secret:redshift!dm-redshift-test-namespace-admin-9rP6W5",
+                                "jdbcConnectionUrl": "jdbc:redshift://dm-redshift-test-workgroup.767397875118.us-west-2.redshift-serverless.amazonaws.com:5439/dev",
                                 "subnetId": "subnet-05769b1803a56904e",
                                 "securityGroupIdList": ["sg-00de20bbf3a80426d"],
                                 "availabilityZone": "us-west-2c",
@@ -62,7 +62,7 @@ describe('StartTask', () => {
             execution: {
                 executionId: "341cf762-b25d-49ce-9e82-f82986337594",
                 executionStartTime: new Date().toISOString(),
-                stateMachineArn: "arn:aws:states:ap-southeast-2:033295216537:stateMachine:df-data-asset"
+                stateMachineArn: "arn:aws:states:ap-southeast-2:033295216537:stateMachine:dm-data-asset"
             }
         })
     })

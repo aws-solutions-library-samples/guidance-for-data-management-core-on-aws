@@ -6,7 +6,7 @@ import { LambdaClient } from '@aws-sdk/client-lambda';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import { DynamoDBDocumentClient, TranslateConfig } from '@aws-sdk/lib-dynamodb';
 import { Cradle, diContainer } from '@fastify/awilix';
-import { Invoker } from '@df/lambda-invoker';
+import { Invoker } from '@dm/lambda-invoker';
 import { Utils } from '../common/utils.js';
 
 import type { FastifyBaseLogger } from 'fastify';

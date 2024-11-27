@@ -17,6 +17,7 @@ import type { Answers } from '../../answers.js';
 import type { Logger } from 'pino';
 import { IdentitystoreClient, CreateUserCommand, GetUserIdCommand } from '@aws-sdk/client-identitystore';
 import { SSOAdminClient, CreateApplicationAssignmentCommand } from '@aws-sdk/client-sso-admin';
+import { saveAnswers } from '../../../utils/answers.ts';
 
 export class IdentityStoreTasksHandler extends SimpleTasksHandler {
 	constructor(public readonly logger: Logger, private readonly identitystoreClient: IdentitystoreClient, private readonly ssoAdminClient: SSOAdminClient) {
@@ -69,6 +70,8 @@ export class IdentityStoreTasksHandler extends SimpleTasksHandler {
 						PrincipalId: userId,
 					})
 				);
+				answers.IdentityStoreAdminUserId = userId;
+				await saveAnswers(answers);
 			},
 		},
 	];

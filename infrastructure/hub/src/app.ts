@@ -7,7 +7,7 @@ import { SsoCustomStack } from './shared/ssoCustom.stack.js';
 import { CognitoCustomStack } from './shared/cognitoCustom.stack.js';
 import { DataLineageStack } from './dataLineage/dataLineage.stack.js';
 import { AwsSolutionsChecks } from 'cdk-nag';
-import { tryGetBooleanContext, getOrThrow, userPoolIdParameter, OrganizationUnitPath } from '@df/cdk-common';
+import { tryGetBooleanContext, getOrThrow, userPoolIdParameter, OrganizationUnitPath } from '@dm/cdk-common';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as fs from 'fs';
@@ -65,7 +65,7 @@ if (useExistingVpc) {
 // tags the entire deployment
 Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
 
-const stackNamePrefix = `df-hub`;
+const stackNamePrefix = `dm-hub`;
 
 const stackName = (suffix: string) => `${stackNamePrefix}-${suffix}`;
 const stackDescription = (moduleName: string) => `Infrastructure for ${moduleName} module`;
@@ -84,8 +84,8 @@ const deployPlatform = (callerEnvironment?: { accountId?: string; region?: strin
 			: undefined,
 		deleteBucket,
 		env: {
-			// The DF_REGION domain variable
-			region: process.env?.['DF_REGION'] || callerEnvironment?.region,
+			// The DM_REGION domain variable
+			region: process.env?.['DM_REGION'] || callerEnvironment?.region,
 			account: callerEnvironment?.accountId,
 		},
 	});
@@ -129,8 +129,8 @@ const deployPlatform = (callerEnvironment?: { accountId?: string; region?: strin
 			loadBalancerCertificateArn,
 			orgPath: orgPath,
 			env: {
-				// The DF_REGION domain variable
-				region: process.env?.['DF_REGION'] || callerEnvironment?.region,
+				// The DM_REGION domain variable
+				region: process.env?.['DM_REGION'] || callerEnvironment?.region,
 				account: callerEnvironment?.accountId,
 			},
 		});

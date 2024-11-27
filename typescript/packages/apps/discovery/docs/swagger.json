@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "DF Discovery",
-    "description": "API to find and retrieve asset metadata from DF.",
+    "title": "DM Discovery",
+    "description": "API to find and retrieve asset metadata from DM.",
     "version": "0.1.0"
   },
   "components": {
@@ -169,7 +169,7 @@
                     "value": {
                       "type": "S3",
                       "detail": {
-                        "arn": "arn:aws:s3:::df-bucket/df-data.csv",
+                        "arn": "arn:aws:s3:::dm-bucket/dm-data.csv",
                         "region": "us-east-1"
                       }
                     }

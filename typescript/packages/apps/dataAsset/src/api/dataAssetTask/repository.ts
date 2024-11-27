@@ -1,6 +1,6 @@
 import type { DataAssetTaskResource, DataAssetTaskResourceListOptions } from "./schemas.js";
 import type { BaseLogger } from "pino";
-import { createDelimitedAttribute, DocumentDbClientItem } from "@df/dynamodb-utils";
+import { createDelimitedAttribute, DocumentDbClientItem } from "@dm/dynamodb-utils";
 import { PkType } from "../../common/pkUtils.js";
 import { DynamoDBDocumentClient, GetCommand, PutCommand, PutCommandInput, ScanCommand, ScanCommandInput } from "@aws-sdk/lib-dynamodb";
 

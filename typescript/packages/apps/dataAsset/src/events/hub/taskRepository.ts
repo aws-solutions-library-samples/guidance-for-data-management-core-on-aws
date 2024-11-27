@@ -1,5 +1,5 @@
 import type { BaseLogger } from "pino";
-import { createDelimitedAttribute } from "@df/dynamodb-utils";
+import { createDelimitedAttribute } from "@dm/dynamodb-utils";
 import { PkType } from "../../common/pkUtils.js";
 import { DynamoDBDocumentClient, UpdateCommandInput, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 

@@ -1,5 +1,5 @@
 {
-	"name": "@df/clients",
+	"name": "@dm/clients",
 	"version": "1.0.0",
 	"description": "A collection of client libraries for various components",
 	"author": "Pouya Bahavar <bahavar@amazon.com>",
@@ -18,7 +18,7 @@
 		"test": "npm run build && vitest run --passWithNoTests"
 	},
 	"dependencies": {
-		"@df/events": "workspace:*",
+		"@dm/events": "workspace:*",
 		"axios": "~1"
 	},
 	"devDependencies": {

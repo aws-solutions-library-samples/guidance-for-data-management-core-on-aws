@@ -82,6 +82,14 @@ export const enterEmail = async (message: string): Promise<string> => {
 	return adminEmail;
 };
 
+export const enterArn = async (message: string): Promise<string> => {
+	const arn = await input({
+		message,
+		validate: (value) => validateStartsWith(value, 'arn:'),
+	});
+	return arn;
+};
+
 // export const accountAndRegionConfirm = async (answers: Answers): Promise<void> => {
 // 	let accountId: string | undefined;
 // 	try {

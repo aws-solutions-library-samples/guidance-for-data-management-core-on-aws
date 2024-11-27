@@ -76,6 +76,7 @@ export type Answers = {
 	dataLakeS3Location?: string;
 	dataZoneRedshiftEnvironmentId?: string;
 	dataZoneRedshiftEnvironmentName?: string;
+	dataZoneAdminRoleArn?: string;
 
 	/**
 	 * Spoke Parameters

@@ -1,7 +1,7 @@
 import type { BaseLogger } from 'pino';
 import type { DataAssetTask } from '../../models.js';
 import { SendTaskSuccessCommand, SFNClient } from '@aws-sdk/client-sfn';
-import { DATA_LINEAGE_DIRECT_HUB_INGESTION_REQUEST_EVENT, DATA_LINEAGE_HUB_EVENT_SOURCE, EventBridgeEventBuilder, type EventPublisher, OpenLineageBuilder, RunEvent } from '@df/events';
+import { DATA_LINEAGE_DIRECT_HUB_INGESTION_REQUEST_EVENT, DATA_LINEAGE_HUB_EVENT_SOURCE, EventBridgeEventBuilder, type EventPublisher, OpenLineageBuilder, RunEvent } from '@dm/events';
 
 export class LineageTask {
 

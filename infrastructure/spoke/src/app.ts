@@ -3,7 +3,7 @@ import * as cdk from 'aws-cdk-lib';
 import { SharedSpokeInfrastructureStack } from './shared/sharedSpoke.stack.js';
 import { DataAssetSpokeStack } from './dataAsset/dataAsset.stack.js';
 
-import { getOrThrow, OrganizationUnitPath, tryGetBooleanContext } from '@df/cdk-common';
+import { getOrThrow, OrganizationUnitPath, tryGetBooleanContext } from '@dm/cdk-common';
 import * as fs from 'fs';
 import path from "path";
 import { fileURLToPath } from "url";
@@ -35,10 +35,10 @@ const deleteBucket = tryGetBooleanContext(app, 'deleteBucket', false);
 const taskTimeOutMinutes =  (app.node.tryGetContext('taskTimeOutMinutes')as number ?? 1440);
 
 
-const stackNamePrefix = `df-spoke`;
+const stackNamePrefix = `dm-spoke`;
 
 const stackName = (suffix: string) => `${stackNamePrefix}-${suffix}`;
-const spokeStackDescription = (moduleName: string, includeGuidanceCode: boolean) => `Infrastructure for ${moduleName} module${includeGuidanceCode ? ' -- Guidance for Data Fabric on AWS (SO9438).' : '.'}`;
+const spokeStackDescription = (moduleName: string, includeGuidanceCode: boolean) => `Infrastructure for ${moduleName} module${includeGuidanceCode ? ' -- Guidance for Data Management on AWS (SO9438).' : '.'}`;
 
 const deploySpoke = (callerEnvironment?: { accountId?: string, region?: string }): void => {
 
@@ -49,8 +49,8 @@ const deploySpoke = (callerEnvironment?: { accountId?: string, region?: string }
     orgPath: orgPath,
     deleteBucket,
     env: {
-      // The DF_REGION domainId variable
-      region: process.env?.['DF_REGION'] || callerEnvironment?.region,
+      // The DM_REGION domainId variable
+      region: process.env?.['DM_REGION'] || callerEnvironment?.region,
       account: callerEnvironment?.accountId
     },
   });
@@ -63,8 +63,8 @@ const deploySpoke = (callerEnvironment?: { accountId?: string, region?: string }
     orgPath: orgPath,
     taskTimeOutMinutes,
     env: {
-      // The DF_REGION domainId variable
-      region: process.env?.['DF_REGION'] || callerEnvironment?.region,
+      // The DM_REGION domainId variable
+      region: process.env?.['DM_REGION'] || callerEnvironment?.region,
       account: callerEnvironment?.accountId
     },
   });

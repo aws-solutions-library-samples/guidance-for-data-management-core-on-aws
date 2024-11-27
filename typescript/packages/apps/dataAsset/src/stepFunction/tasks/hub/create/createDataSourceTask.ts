@@ -3,7 +3,7 @@ import type { DataAssetTask } from '../../models.js';
 import { ListDataSourcesCommand, CreateDataSourceCommand, CreateDataSourceCommandInput, DataSourceConfigurationInput } from '@aws-sdk/client-datazone';
 import { getConnectionType, getResourceArn } from '../../../../common/utils.js';
 import { SendTaskSuccessCommand, type SFNClient } from '@aws-sdk/client-sfn';
-import { OpenLineageBuilder } from '@df/events';
+import { OpenLineageBuilder } from '@dm/events';
 import type { DataZoneUserAuthClientFactory } from '../../../../plugins/module.awilix.js';
 
 export class CreateDataSourceTask {
@@ -145,8 +145,8 @@ export class CreateDataSourceTask {
 			// Construct the meta data fields
 			assetFormsInput: [
 				{
-					formName: 'df_profile_form',
-					typeIdentifier: 'df_profile_form',
+					formName: 'dm_profile_form',
+					typeIdentifier: 'dm_profile_form',
 					content: JSON.stringify({
 						task_id: event.dataAsset.id,
 						data_profile_location: event.dataAsset.execution.dataProfileJob.outputPath,

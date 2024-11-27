@@ -1,13 +1,13 @@
 import { Type } from '@sinclair/typebox';
 import { dataAssetTaskResource, newDataAssetTaskResource } from '../schemas.js';
-import { apiVersion100, badRequestResponse, commonHeaders, FastifyTypebox, serviceUnavailableResponse } from '@df/resource-api-base';
+import { apiVersion100, badRequestResponse, commonHeaders, FastifyTypebox, serviceUnavailableResponse } from '@dm/resource-api-base';
 
 export default function createDataAssetTasksRoute(fastify: FastifyTypebox, _options: unknown, done: () => void): void {
     fastify.route({
         method: 'POST',
         url: '/dataAssetTasks',
         schema: {
-            description: `Creates a new task to create data asset in DF(Data Foundation)`,
+            description: `Creates a new task to create data asset in DM(Data Foundation)`,
             tags: ['Data Asset Task'],
             headers: commonHeaders,
             body: {

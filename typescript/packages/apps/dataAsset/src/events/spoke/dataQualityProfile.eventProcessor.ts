@@ -1,10 +1,10 @@
-import type { DataQualityResultsAvailableEvent, RuleResult, RunEvent } from "@df/events";
-import {  DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT, DATA_LINEAGE_SPOKE_EVENT_SOURCE, EventBridgeEventBuilder, EventPublisher, OpenLineageBuilder } from "@df/events";
+import type { DataQualityResultsAvailableEvent, RuleResult, RunEvent } from "@dm/events";
+import {  DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT, DATA_LINEAGE_SPOKE_EVENT_SOURCE, EventBridgeEventBuilder, EventPublisher, OpenLineageBuilder } from "@dm/events";
 import type { BaseLogger } from "pino";
 import type { SFNClient } from "@aws-sdk/client-sfn";
 import { SendTaskSuccessCommand } from "@aws-sdk/client-sfn";
 import { GetDataQualityResultCommand, GetDataQualityRulesetEvaluationRunCommand, GetTagsCommand, GlueClient } from "@aws-sdk/client-glue";
-import { validateNotEmpty } from "@df/validators";
+import { validateNotEmpty } from "@dm/validators";
 import type { S3Utils } from "../../common/s3Utils.js";
 import { TaskType } from "../../stepFunction/tasks/models.js";
 
@@ -27,7 +27,7 @@ export class DataQualityProfileEventProcessor {
         const {rulesetNames, resultId, context} = event.detail;
 
         /**
-         * There will only one ruleset configured by Data Fabric
+         * There will only one ruleset configured by Data Management
          */
         const rulesetName = rulesetNames[0];
         const rulesetArn = `arn:aws:glue:${event.region}:${event.account}:dataQualityRuleset/${rulesetName}`;

@@ -4,7 +4,7 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
 const { SSO_INSTANCE_ARN, SSO_REGION, ADMIN_EMAIL } = process.env;
 
-export const adminUserIdParameter = `/df/shared/adminUserIdentifierParameter`;
+export const adminUserIdParameter = `/dm/shared/adminUserIdentifierParameter`;
 
 const ssoClient = new SSOAdminClient({ region: SSO_REGION });
 const identityStoreClient = new IdentitystoreClient({ region: SSO_REGION });

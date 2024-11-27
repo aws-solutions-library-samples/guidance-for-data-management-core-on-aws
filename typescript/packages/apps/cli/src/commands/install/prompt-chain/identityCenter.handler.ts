@@ -83,7 +83,7 @@ export class IdentityCenterPromptHandler extends PromptHandler {
 	private async createIdentityInstance(answers: Answers, spinner: Ora): Promise<string> {
 		spinner.start('Creating the identity instance');
 
-		const instanceId = await this.ssoAdminClient.send(new CreateInstanceCommand({ Name: 'df-instance' }));
+		const instanceId = await this.ssoAdminClient.send(new CreateInstanceCommand({ Name: 'dm-instance' }));
 		answers.identityStoreId = instanceId.InstanceArn;
 		spinner.succeed('Created identity instance with ID: ' + instanceId.InstanceArn);
 

@@ -8,8 +8,8 @@ export interface S3ConstructProperties {
 	bucketName: string;
 }
 
-export const bucketNameParameter = `/df-demo/hub/shared/bucketName`;
-export const bucketArnParameter = `/df-demo/hub/shared/bucketArn`;
+export const bucketNameParameter = `/dm-demo/hub/shared/bucketName`;
+export const bucketArnParameter = `/dm-demo/hub/shared/bucketArn`;
 
 export class S3Construct extends Construct {
 	bucketArn: string;
@@ -17,7 +17,7 @@ export class S3Construct extends Construct {
 	constructor(scope: Construct, id: string, props: S3ConstructProperties) {
 		super(scope, id);
 
-		const bucket = new s3.Bucket(this, 'dfBucket', {
+		const bucket = new s3.Bucket(this, 'dmBucket', {
 			bucketName: props.bucketName,
 			encryption: s3.BucketEncryption.S3_MANAGED,
 			intelligentTieringConfigurations: [

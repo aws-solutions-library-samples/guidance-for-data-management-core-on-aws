@@ -611,9 +611,9 @@ export interface lineageIngestionEvent {
     Detail: RunEvent,
 };
 
-export const DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT = `DF>${DATA_LINEAGE_SPOKE_EVENT_SOURCE}>ingestion>request`;
+export const DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT = `DM>${DATA_LINEAGE_SPOKE_EVENT_SOURCE}>ingestion>request`;
 
-export const DATA_LINEAGE_DIRECT_HUB_INGESTION_REQUEST_EVENT = `DF>${DATA_LINEAGE_HUB_EVENT_SOURCE}>ingestion>request`;
+export const DATA_LINEAGE_DIRECT_HUB_INGESTION_REQUEST_EVENT = `DM>${DATA_LINEAGE_HUB_EVENT_SOURCE}>ingestion>request`;
 
 export type { lineageIngestionEvent as LineageIngestionEvent };
 

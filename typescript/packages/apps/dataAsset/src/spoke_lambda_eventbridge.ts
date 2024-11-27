@@ -2,7 +2,7 @@ import type { Callback, Context, EventBridgeHandler } from 'aws-lambda';
 import type { AwilixContainer } from 'awilix';
 import type { FastifyInstance } from 'fastify';
 import { buildLightApp } from './app.light.js';
-import { CrawlerStateChangeEvent, DATA_BREW_JOB_STATE_CHANGE, DATA_QUALITY_EVALUATION_RESULTS_AVAILABLE, DataQualityResultsAvailableEvent, GLUE_CRAWLER_STATE_CHANGE, JobStateChangeEvent } from '@df/events';
+import { CrawlerStateChangeEvent, DATA_BREW_JOB_STATE_CHANGE, DATA_QUALITY_EVALUATION_RESULTS_AVAILABLE, DataQualityResultsAvailableEvent, GLUE_CRAWLER_STATE_CHANGE, JobStateChangeEvent } from '@dm/events';
 import type { JobEventProcessor } from './events/spoke/job.eventProcessor.js';
 import type { GlueCrawlerEventProcessor } from './events/spoke/glueCrawler.eventProcessor.js';
 import type { DataQualityProfileEventProcessor } from "./events/spoke/dataQualityProfile.eventProcessor.js";

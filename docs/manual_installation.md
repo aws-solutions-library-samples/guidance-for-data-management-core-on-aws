@@ -1,4 +1,4 @@
-# Guidance for Data Fabric on AWS
+# Guidance for Data Management on AWS
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -10,15 +10,15 @@
 7. [Cleanup](#cleanup)
 
 ## Overview
-The Guidance for Data Fabric on AWS is an opinionated data fabric implementation on AWS.
+The Guidance for Data Management on AWS is an opinionated Data Management implementation on AWS.
 
 ### Cost
 You are responsible for the cost of the AWS services used while running this Guidance. As of May 2024, the cost for running this Guidance with the default settings in the US West (Oregon) AWS Region is approximately $530 per month, using the following assumptions:
 
  * Assume 10 DataZone users with metadata storage & requests under amount included in per user cost ([DataZone pricing](https://aws.amazon.com/datazone/pricing/))
- * 50 data fabric create asset API requests per month
+ * 50 Data Management create asset API requests per month
  * Low (< 1k) lineage API/PUT requests per month
- * Does not include estimates for existing S3, Glue, etc resources in the customer's data fabric spoke account
+ * Does not include estimates for existing S3, Glue, etc resources in the customer's Data Management spoke account
 
 A detailed cost breakdown estimate can be found at [this shared AWS Pricing Calculator estimate](https://calculator.aws/#/estimate?id=b1560b8587e9048fae318b247799f336d02453bd). This detailed estimate does not yet include DataZone pricing so adding \$9/month/user for our assumed 10 users gives us \$90 additional per month to add on to this estimate. This gives us the \$530/month estimate referenced above.
 
@@ -81,8 +81,8 @@ These deployment instructions are intended for use on MacOS. Deployment using a 
                ]
             }
             ```
-    2. In your Spoke account create an IAM role to be used when creating assets in DF. You will pass the role’s Amazon Resource Name (ARN) to DF when you create assets. DF will pass this role to Glue and Glue DataBrew as needed.
-        1. The role name must be prefixed with `df-`. This enables the role to be passed by DF.
+    2. In your Spoke account create an IAM role to be used when creating assets in DM. You will pass the role’s Amazon Resource Name (ARN) to DM when you create assets. DM will pass this role to Glue and Glue DataBrew as needed.
+        1. The role name must be prefixed with `dm-`. This enables the role to be passed by DM.
         2. The trust policy is as follows:
             ```
             {
@@ -114,7 +114,7 @@ These deployment instructions are intended for use on MacOS. Deployment using a 
 6. Generate and upload a certificate
     1. `openssl genrsa 2048 > my-aws-private.key`
     2. `openssl req -new -x509 -nodes -sha1 -days 3650 -extensions v3_ca -key my-aws-private.key > my-aws-public.crt`
-        1. Leave all prompts blank except `Common Name (e.g. server FQDN or YOUR name) []:` can be set as  `df.amazonaws.com`.
+        1. Leave all prompts blank except `Common Name (e.g. server FQDN or YOUR name) []:` can be set as  `dm.amazonaws.com`.
     3. Import certificate into the **hub** account: `aws acm import-certificate --certificate fileb://my-aws-public.crt --private-key fileb://my-aws-private.key --region <REGION> --profile <AWS_PROFILE>`
     4. Note the ARN that is returned. You will need to provide this as `loadBalancerCertificateArn` when deploying the hub infrastructure
 
@@ -163,8 +163,8 @@ We will need to deploy the hub stack in three separate steps
 
 #### Step 1: **Setup the shared stack**
 **_Note:_** this step only needs to be performed once for the initial deployment
-1. `git clone git@github.com:aws-solutions-library-samples/guidance-for-data-fabric-on-aws.git`
-2. `cd guidance-for-data-fabric-on-aws`
+1. `git clone git@github.com:aws-solutions-library-samples/guidance-for-data-management-on-aws.git`
+2. `cd guidance-for-data-management-on-aws`
 3. Install dependencies `rush update --bypass-policy`
 4. Build `rush build`
 5. `cd infrastructure/hub`
@@ -201,7 +201,7 @@ We will need to deploy the hub stack in three separate steps
 ### Post-Deployment Steps
 
 1. Open the AWS Lake Formation console in the spoke account
-    1. Go to the `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` database
+    1. Go to the `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` database
     2. Click **Edit** and uncheck the “Use only IAM access control for new tables in this database” and click **Save**.
     3. Click **Actions/permissions/view**
         1. Select **IAMAllowedPrincipals** and click **Revoke**
@@ -212,7 +212,7 @@ We will need to deploy the hub stack in three separate steps
                     1. IAM users and roles: `AmazonDataZoneGlueAccess-<REGION>-<DOMAIN_ID>`
                 2. LF-Tags or catalog resources
                     1. Select **Named Data Catalog resources**
-                    2. Databases: `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
+                    2. Databases: `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
                 3. Database permissions:
                     1. Database permissions: `Describe`
                     2. Grantable permissions: `Describe`
@@ -221,7 +221,7 @@ We will need to deploy the hub stack in three separate steps
                     1. IAM users and roles: `AmazonDataZoneGlueAccess-<REGION>-<DOMAIN_ID>`
                 2. LF-Tags or catalog resources
                     1. Select **Named Data Catalog resources**
-                    2. Databases: `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
+                    2. Databases: `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
                     3. Tables: All tables
                 3. Table permissions:
                     1. Table permissions: `Describe`, `Select`
@@ -231,7 +231,7 @@ We will need to deploy the hub stack in three separate steps
                     1. IAM users and roles: `<SERVICE_ROLE>`
                 2. LF-Tags or catalog resources
                     1. Select **Named Data Catalog resources**
-                    2. Databases: `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
+                    2. Databases: `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
                 3. Database permissions:
                     1. Database permissions: `Create table`, `Describe`
                     2. Grantable permissions: None
@@ -240,7 +240,7 @@ We will need to deploy the hub stack in three separate steps
                     1. IAM users and roles: `<SERVICE_ROLE>`
                 2. LF-Tags or catalog resources
                     1. Select **Named Data Catalog resources**
-                    2. Databases: `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
+                    2. Databases: `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>`
                     3. Tables: All tables
                 3. Table permissions:
                     1. Table permissions: `Alter`, `Describe`, `Insert`, `Select`
@@ -248,14 +248,14 @@ We will need to deploy the hub stack in three separate steps
     5. Add the S3 bucket as a data location
         1. Go to **Data lake locations**
         2. Click **Register location**
-        3. Enter the `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` location
+        3. Enter the `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` location
         4. Switch **Permission mode** to **Lake Formation**
         5. Click **Register Location**
     6. Grant the service role access to the data location
         1. Go to **Data locations**
         2. Click **Grant**
         3. Select the service role created earlier
-        4. Enter the `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` location for **Storage locations**
+        4. Enter the `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` location for **Storage locations**
         5. Click **Grant**
 2. Sign in to DataZone with the user that you will be making API calls with
     1. Create a user in IAM Identity center in the Management account
@@ -278,14 +278,14 @@ We will need to deploy the hub stack in three separate steps
 ## Deployment Validation
 
 1. Check that the following CloudFormation stacks have been successfully created in the spoke account:
-    1. `df-spoke-shared`
-    2. `df-spoke-dataAsset`
+    1. `dm-spoke-shared`
+    2. `dm-spoke-dataAsset`
 2. Check that the following CloudFormation stacks have been successfully created in the hub account:
-    1. `df-hub-shared`
-    2. `df-hub-CognitoCustomStack`
-    3. `df-hub-SsoCustomStack`
-    4. `df-hub-datalineage`
-    5. `df-hub-dataAsset`
+    1. `dm-hub-shared`
+    2. `dm-hub-CognitoCustomStack`
+    3. `dm-hub-SsoCustomStack`
+    4. `dm-hub-datalineage`
+    5. `dm-hub-dataAsset`
 
 ## Running the Guidance
 
@@ -295,9 +295,9 @@ The following outlines steps to be done to create an asset using the Data Asset 
 
 1. Generate a token
     1. Go to Amazon Cognito in the Hub account
-    2. Select the `df` user pool
+    2. Select the `dm` user pool
     3. Click **App Integration**
-    4. Scroll the the bottom of the page and select `df-sso-client` from the App client list
+    4. Scroll the the bottom of the page and select `dm-sso-client` from the App client list
     5. Scroll to the Hosted UI section and click View Hosted UI
     6. Log in with your configured IAM Identity Center User
     7. You should be redirected to localhost in your browser
@@ -305,7 +305,7 @@ The following outlines steps to be done to create an asset using the Data Asset 
     9. It should take the form of `localhost:3000/#access_token=<ACCESS_TOKEN>&id_token=<ID_TOKEN>&token_type=Bearer&expires_in=3600`
     10. Copy the ID token, which should be valid for 1 hour. You can click through the hosted UI again to generate a new token.
 2. Open an API client of your choice
-    1. Go to AWS Systems Manager Parameter Store and open the `/df/dataAsset/apiUrl` parameter. This is the API URL.
+    1. Go to AWS Systems Manager Parameter Store and open the `/dm/dataAsset/apiUrl` parameter. This is the API URL.
     2. Configure the client as follows:
         1. Method `POST` 
         2. URL:  `<API_URL>dataAssetTasks`
@@ -332,8 +332,8 @@ The following outlines steps to be done to create an asset using the Data Asset 
             ```
         6. Run the request
         7. Check that the Step Functions have completed successfully.
-            1. Go to the AWS Console in the hub account and look at the `df-data-asset` State Machine in AWS Step Functions. You should see a successful an execution running.
-            2. Go to the AWS Console in the spoke account and look at the `df-spoke-data-asset` State Machine in AWS Step Functions. You should see an execution running.
+            1. Go to the AWS Console in the hub account and look at the `dm-data-asset` State Machine in AWS Step Functions. You should see a successful an execution running.
+            2. Go to the AWS Console in the spoke account and look at the `dm-spoke-data-asset` State Machine in AWS Step Functions. You should see an execution running.
             3. Once the executions complete, you should be able to[find the new assets in the DataZone data catalog](https://docs.aws.amazon.com/datazone/latest/userguide/search-for-data.html).
 
 #### Sample Dataset
@@ -346,11 +346,11 @@ A simple sample dataset file can be found [in docs/sample_data/sample_products.c
 | Bravo   | 102   | 5      | 961.00  |
 | Charlie | 155   | 4      | 472.00  |
 
-These rows represent a table of product names, the number of units in inventory, their weight, and their cost. Below we will add this data as assets in the data fabric using the Data Asset API. There is an example of creating a Glue table asset backed by S3 or a Redshift table. Both of these assets will be managed assets in DataZone meaning other users of DataZone can subscribe to and consume these when published.
+These rows represent a table of product names, the number of units in inventory, their weight, and their cost. Below we will add this data as assets in the Data Management using the Data Asset API. There is an example of creating a Glue table asset backed by S3 or a Redshift table. Both of these assets will be managed assets in DataZone meaning other users of DataZone can subscribe to and consume these when published.
 
 #### Glue Tables
 
-1. Load the CSV file into the `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` S3 bucket
+1. Load the CSV file into the `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` S3 bucket
 2. Make an API request replacing the request body `workflow` with:
    ```
     {
@@ -423,21 +423,21 @@ This workflow does not include a transform or user-defined data quality check as
 ### Viewing Assets
 After the data asset workflow completes a new data asset will be published to the fabric.
 #### Catalog
-The data fabric catalog can be searched within Amazon DataZone. See the [documentation](https://docs.aws.amazon.com/datazone/latest/userguide/search-for-data.html) for more information.
+The Data Management catalog can be searched within Amazon DataZone. See the [documentation](https://docs.aws.amazon.com/datazone/latest/userguide/search-for-data.html) for more information.
 
 #### Lineage
-You can view the lineage information from the Marquez portal or the Marquez API. The location of these endpoints can be found in the following SSM parameters `/df/dataLineage/openLineageApiUrl` and `/df/dataLineage/openLineageWebUrl`.
+You can view the lineage information from the Marquez portal or the Marquez API. The location of these endpoints can be found in the following SSM parameters `/dm/dataLineage/openLineageApiUrl` and `/dm/dataLineage/openLineageWebUrl`.
 
 ## Next Steps
 
-1. Customers can bring their own tools for profiling/quality, etc. to the Data Fabric.
-2. Customers can attach into *DF message bus (EventBridge) to trigger any other processes that need to be added.
-3. Customers can author their own data products. See the [Guidance for Sustainability Data Fabric on AWS](https://github.com/aws-solutions-library-samples/guidance-for-sustainability-data-fabric-on-aws) for an example data product implementation. If you would like to develop your own data product, see the guide on [Authoring Your Own Data Product](./docs/tutorials/dataProduct/README.md).
+1. Customers can bring their own tools for profiling/quality, etc. to the Data Management.
+2. Customers can attach into *DM message bus (EventBridge) to trigger any other processes that need to be added.
+3. Customers can author their own data products. See the [Guidance for Sustainability Data Management on AWS](https://github.com/aws-solutions-library-samples/guidance-for-sustainability-data-management-on-aws) for an example data product implementation. If you would like to develop your own data product, see the guide on [Authoring Your Own Data Product](./docs/tutorials/dataProduct/README.md).
 
 ## Cleanup
 
-1. Go to the CloudFormation console in the spoke account and delete all stacks prefixed by `df-spoke`.
-2. Go to the CloudFormation console in the hub account and delete all stacks prefixed by `df-hub`.
+1. Go to the CloudFormation console in the spoke account and delete all stacks prefixed by `dm-spoke`.
+2. Go to the CloudFormation console in the hub account and delete all stacks prefixed by `dm-hub`.
 
 ## Notices
 

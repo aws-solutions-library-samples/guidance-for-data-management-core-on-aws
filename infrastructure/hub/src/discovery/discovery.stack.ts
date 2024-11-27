@@ -1,7 +1,7 @@
 import { Stack, StackProps } from "aws-cdk-lib";
 import type { Construct } from "constructs";
 import * as ssm from "aws-cdk-lib/aws-ssm";
-import { userPoolIdParameter } from "@df/cdk-common";
+import { userPoolIdParameter } from "@dm/cdk-common";
 import { NagSuppressions } from 'cdk-nag';
 import { Discovery } from "./discovery.construct.js";
 

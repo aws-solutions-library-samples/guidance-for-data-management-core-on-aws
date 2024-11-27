@@ -21,8 +21,8 @@ export default fp<FastifySwaggerOptions>(async (app) => {
     await app.register(FastifySwagger, {
         openapi: {
             info: {
-                title: 'DF Discovery',
-                description: `API to find and retrieve asset metadata from DF.`,
+                title: 'DM Discovery',
+                description: `API to find and retrieve asset metadata from DM.`,
                 version: '0.1.0',
             },
             servers: [

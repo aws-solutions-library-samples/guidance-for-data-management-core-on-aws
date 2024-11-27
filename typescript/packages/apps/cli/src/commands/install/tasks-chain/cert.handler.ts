@@ -18,7 +18,7 @@ import { TasksHandler } from '../../../tasks/base.handler.ts';
 import { bomb } from '../../../prompts/common.prompts.js';
 import { switchToICli } from '../../../utils/shell.js';
 
-export const loadBalancerCertificateArnParameter = `/df/datazone/loadBalancerCertificateArn`;
+export const loadBalancerCertificateArnParameter = `/dm/datazone/loadBalancerCertificateArn`;
 
 export class CertTasksHandler extends TasksHandler {
 	protected override getLinuxTasks(): ListrTask[] {
@@ -32,8 +32,8 @@ export class CertTasksHandler extends TasksHandler {
 				task: async (): Promise<void> => {
 					try {
 						await switchToICli();
-						await $`openssl genrsa 2048 > data-fabric.private.key`.quiet();
-						await $`openssl req -new -x509 -nodes -sha1 -days 3650 -extensions v3_ca -subj '/CN=df.amazonaws.com' -key data-fabric.private.key > data-fabric.public.crt`.quiet();
+						await $`openssl genrsa 2048 > data-management.private.key`.quiet();
+						await $`openssl req -new -x509 -nodes -sha1 -days 3650 -extensions v3_ca -subj '/CN=dm.amazonaws.com' -key data-management.private.key > data-management.public.crt`.quiet();
 					} catch (e) {
 						this.logger.error(e);
 					}
@@ -44,7 +44,7 @@ export class CertTasksHandler extends TasksHandler {
 				task: async (ctx: Answers): Promise<void> => {
 					try {
 						const response =
-							await $`aws acm import-certificate --certificate fileb://data-fabric.public.crt --private-key fileb://data-fabric.private.key --region ${ctx.region}`.quiet();
+							await $`aws acm import-certificate --certificate fileb://data-management.public.crt --private-key fileb://data-management.private.key --region ${ctx.region}`.quiet();
 						const loadBalancerCertificateArnStr = Buffer.from(response.stdout).toString('utf-8');
 						const loadBalancerCertificateArn = JSON.parse(loadBalancerCertificateArnStr)?.['CertificateArn'] as string;
 
@@ -66,8 +66,8 @@ export class CertTasksHandler extends TasksHandler {
 				task: async (): Promise<void> => {
 					try {
 						await switchToICli();
-						await $`openssl genrsa -out data-fabric.private.key 2048`.quiet();
-						await $`openssl req -new -x509 -nodes -sha1 -days 3650 -extensions v3_ca -subj "/CN=df.amazonaws.com" -key data-fabric.private.key -out data-fabric.public.crt`.quiet();
+						await $`openssl genrsa -out data-management.private.key 2048`.quiet();
+						await $`openssl req -new -x509 -nodes -sha1 -days 3650 -extensions v3_ca -subj "/CN=dm.amazonaws.com" -key data-management.private.key -out data-management.public.crt`.quiet();
 					} catch (e) {
 						this.logger.error(e);
 					}
@@ -78,7 +78,7 @@ export class CertTasksHandler extends TasksHandler {
 				task: async (ctx: Answers): Promise<void> => {
 					try {
 						const response =
-							await $`aws acm import-certificate --certificate fileb://data-fabric.public.crt --private-key fileb://data-fabric.private.key --region ${ctx.region}`.quiet();
+							await $`aws acm import-certificate --certificate fileb://data-management.public.crt --private-key fileb://data-management.private.key --region ${ctx.region}`.quiet();
 						const loadBalancerCertificateArnStr = Buffer.from(response.stdout).toString('utf-8');
 						const loadBalancerCertificateArn = JSON.parse(loadBalancerCertificateArnStr)?.['CertificateArn'] as string;
 

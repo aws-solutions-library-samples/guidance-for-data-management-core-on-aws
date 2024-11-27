@@ -79,7 +79,7 @@ export interface Column {
 
 export interface JobInput {
     /**
-     * Name of the job, e.g. df_create_dataset, to make the job unique, the product name will be included as suffix
+     * Name of the job, e.g. dm_create_dataset, to make the job unique, the product name will be included as suffix
      */
     jobName: string;
     /**
@@ -87,11 +87,11 @@ export interface JobInput {
      */
     assetName: string;
     /**
-     * For asset that requires transformation in DF, user can specify the location of transformation code
+     * For asset that requires transformation in DM, user can specify the location of transformation code
      */
     sourceCode?: Pick<SourceCodeJobFacet, 'sourceCode' | '_producer' | 'language'>;
     /**
-     * For custom data product (asset created outside of DF), user can specify the code used to transform the dataset
+     * For custom data product (asset created outside of DM), user can specify the code used to transform the dataset
      */
     sourceCodeLocation?: Pick<SourceCodeLocationJobFacet, '_producer' | 'type' | 'url' | 'repoUrl' | 'path' | 'version' | 'tag' | 'branch'>;
 
@@ -137,7 +137,7 @@ export interface EndJobInput {
 }
 
 export interface DatasetInput {
-    type: 'Custom' | 'DataFabric',
+    type: 'Custom' | 'DataManagement',
     usernames?: string[];
 }
 
@@ -159,7 +159,7 @@ export type DatasetOutput = {
 }
 
 /**
- * Payload for registering custom data input that exists outside the Data Fabric.
+ * Payload for registering custom data input that exists outside the Data Management.
  */
 export type CustomDatasetInput = {
     /**
@@ -193,15 +193,15 @@ export type CustomDatasetInput = {
 
 
 /**
- * Payload for registering input that exists inside the Data Fabric.
+ * Payload for registering input that exists inside the Data Management.
  */
-export type DataFabricInput = {
+export type DataManagementInput = {
     /**
-     * Asset namespace in Data Fabric.
+     * Asset namespace in Data Management.
      */
     assetNamespace: string;
     /**
-     * Asset name in Data Fabric.
+     * Asset name in Data Management.
      */
     assetName: string;
 } & DatasetInput;
@@ -216,7 +216,7 @@ export class OpenLineageBuilder {
 
 
     public static getDomainNamespace(domain: { name: string, id: string }) {
-        return `df.${domain.name.replace(' ', '_')}-${domain.id}`;
+        return `dm.${domain.name.replace(' ', '_')}-${domain.id}`;
     }
 
     public static getJobName(taskType: string, assetName: string) {
@@ -319,7 +319,7 @@ export class OpenLineageBuilder {
                     "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/OwnershipJobFacet.json",
                     "owners": [
                         ...this.convertUsernameToOwners(input.usernames),
-                        { "name": "application:df.DataAssetModule" }
+                        { "name": "application:dm.DataAssetModule" }
                     ]
                 }
             },
@@ -359,7 +359,7 @@ export class OpenLineageBuilder {
                     "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/OwnershipDatasetFacet.json",
                     "owners": [
                         ...this.convertUsernameToOwners(datasetOutput.usernames),
-                        { "name": "application:df.DataAssetModule" }
+                        { "name": "application:dm.DataAssetModule" }
                     ]
                 }
             }
@@ -395,7 +395,7 @@ export class OpenLineageBuilder {
         return this;
     }
 
-    public setDatasetInput(payload: CustomDatasetInput | DataFabricInput): OpenLineageBuilder {
+    public setDatasetInput(payload: CustomDatasetInput | DataManagementInput): OpenLineageBuilder {
         const owners = [];
         if (payload?.usernames) {
             owners.push(...payload.usernames.map(u => ({ "name": `user:${u}` })));
@@ -444,10 +444,10 @@ export class OpenLineageBuilder {
                 }
 
                 break;
-            case "DataFabric":
+            case "DataManagement":
                 dataset = {
-                    namespace: (payload as DataFabricInput).assetNamespace,
-                    name: (payload as DataFabricInput).assetName,
+                    namespace: (payload as DataManagementInput).assetNamespace,
+                    name: (payload as DataManagementInput).assetName,
                     facets: {},
                     inputFacets: {},
                 }

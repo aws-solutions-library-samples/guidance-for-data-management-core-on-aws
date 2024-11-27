@@ -11,7 +11,7 @@ export class NetworkConstruct extends Construct {
 		super(scope, id);
 
 		this.vpc = new Vpc(this, 'Vpc', {
-			vpcName: `df-demo-network`,
+			vpcName: `dm-demo-network`,
 			subnetConfiguration: [
 				{
 					name: 'public-subnet',

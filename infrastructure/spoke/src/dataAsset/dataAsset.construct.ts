@@ -1,4 +1,4 @@
-import { dfEventBusArn, dfSpokeEventBusArn, dfSpokeEventBusName, getLambdaArchitecture, OrganizationUnitPath } from '@df/cdk-common';
+import { dmEventBusArn, dmSpokeEventBusArn, dmSpokeEventBusName, getLambdaArchitecture, OrganizationUnitPath } from '@dm/cdk-common';
 import { CfnEventBusPolicy, CfnRule, EventBus, Rule } from 'aws-cdk-lib/aws-events';
 import { Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
@@ -20,7 +20,7 @@ import {
     DATA_BREW_JOB_STATE_CHANGE,
     DATA_QUALITY_EVALUATION_RESULTS_AVAILABLE,
     GLUE_CRAWLER_STATE_CHANGE
-} from '@df/events';
+} from '@dm/events';
 import { EventBus as EventBusTarget, LambdaFunction, SfnStateMachine } from 'aws-cdk-lib/aws-events-targets';
 import { Queue } from 'aws-cdk-lib/aws-sqs';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
@@ -46,11 +46,11 @@ export class DataAssetSpoke extends Construct {
     constructor(scope: Construct, id: string, props: DataAssetSpokeConstructProperties) {
         super(scope, id);
 
-        const namePrefix = 'df-spoke';
+        const namePrefix = 'dm-spoke';
         const accountId = Stack.of(this).account;
         const region = Stack.of(this).region;
-        const hubEventBus = EventBus.fromEventBusArn(this, 'HubEventBus', dfEventBusArn(props.hubAccountId, region));
-        const spokeEventBus = EventBus.fromEventBusArn(this, 'SpokeEventBus', dfSpokeEventBusArn(accountId, region));
+        const hubEventBus = EventBus.fromEventBusArn(this, 'HubEventBus', dmEventBusArn(props.hubAccountId, region));
+        const spokeEventBus = EventBus.fromEventBusArn(this, 'SpokeEventBus', dmSpokeEventBusArn(accountId, region));
         const defaultEventBus = EventBus.fromEventBusName(this, 'DefaultEventBus', 'default');
         const bucket = Bucket.fromBucketName(this, 'jobsOutputBucket', props.bucketName);
         const glueDatabase = Database.fromDatabaseArn(this, 'glueDatabase', props.glueDatabaseArn)
@@ -81,7 +81,7 @@ export class DataAssetSpoke extends Construct {
                 'iam:PassRole'
             ],
             resources: [
-                `arn:aws:iam::${accountId}:role/df-*` // we Only allow assume roles for roles that have a df- prefix
+                `arn:aws:iam::${accountId}:role/dm-*` // we Only allow assume roles for roles that have a dm- prefix
             ]
         });
 
@@ -152,7 +152,7 @@ export class DataAssetSpoke extends Construct {
                 'ssm:PutParameter'
             ],
             resources: [
-                `arn:aws:ssm:${region}:${accountId}:parameter/df/spoke/dataAsset/*` // we Only allow assume roles for roles that have a df- prefix
+                `arn:aws:ssm:${region}:${accountId}:parameter/dm/spoke/dataAsset/*` // we Only allow assume roles for roles that have a dm- prefix
             ]
         });
 
@@ -399,7 +399,7 @@ export class DataAssetSpoke extends Construct {
             logRetention: RetentionDays.ONE_WEEK,
             timeout: Duration.minutes(5),
             environment: {
-                HUB_EVENT_BUS_NAME: dfEventBusArn(props.hubAccountId, region),
+                HUB_EVENT_BUS_NAME: dmEventBusArn(props.hubAccountId, region),
                 SPOKE_EVENT_BUS_NAME: props.spokeEventBusName,
                 JOBS_BUCKET_NAME: props.bucketName,
                 JOBS_BUCKET_PREFIX: 'jobs'
@@ -450,7 +450,7 @@ export class DataAssetSpoke extends Construct {
             logRetention: RetentionDays.ONE_WEEK,
             timeout: Duration.minutes(5),
             environment: {
-                HUB_EVENT_BUS_NAME: dfEventBusArn(props.hubAccountId, region),
+                HUB_EVENT_BUS_NAME: dmEventBusArn(props.hubAccountId, region),
                 SPOKE_EVENT_BUS_NAME: props.spokeEventBusName,
                 JOBS_BUCKET_NAME: props.bucketName,
                 JOBS_BUCKET_PREFIX: 'jobs',
@@ -862,7 +862,7 @@ export class DataAssetSpoke extends Construct {
                 SPOKE_EVENT_BUS_NAME: props.spokeEventBusName,
                 JOBS_BUCKET_NAME: props.bucketName,
                 JOBS_BUCKET_PREFIX: 'jobs',
-                HUB_EVENT_BUS_NAME: dfEventBusArn(props.hubAccountId, region),
+                HUB_EVENT_BUS_NAME: dmEventBusArn(props.hubAccountId, region),
                 SPOKE_GLUE_DATABASE_NAME: glueDatabase.databaseName
             },
             bundling: {
@@ -941,12 +941,12 @@ export class DataAssetSpoke extends Construct {
 
         // Add eventBus Policy for incoming job events
         new CfnEventBusPolicy(this, 'JobEventBusPutEventPolicy', {
-            eventBusName: dfSpokeEventBusName,
+            eventBusName: dmSpokeEventBusName,
             statementId: 'SpokeAllowSpokeAccountsToPutJobEvents',
             statement: {
                 Effect: Effect.ALLOW,
                 Action: ['events:PutEvents'],
-                Resource: [`arn:aws:events:${region}:${accountId}:event-bus/${dfSpokeEventBusName}`],
+                Resource: [`arn:aws:events:${region}:${accountId}:event-bus/${dmSpokeEventBusName}`],
                 Principal: '*',
                 Condition: {
                     'StringEquals': {
@@ -962,7 +962,7 @@ export class DataAssetSpoke extends Construct {
 
         // Create resources which enable the spoke account to subscribe to job events from the hub
         // Add role in this spoke account which will be used by the target in the hub account to publish hub events to this spoke bus
-        const dfSpokeSubscriptionRuleTargetRole = new Role(
+        const dmSpokeSubscriptionRuleTargetRole = new Role(
             this,
             `DfSpokeSubscriptionRuleTargetRole-${region}`,
             {
@@ -970,7 +970,7 @@ export class DataAssetSpoke extends Construct {
                 assumedBy: new ServicePrincipal("events.amazonaws.com"),
             }
         );
-        spokeEventBus.grantPutEventsTo(dfSpokeSubscriptionRuleTargetRole);
+        spokeEventBus.grantPutEventsTo(dmSpokeSubscriptionRuleTargetRole);
 
         // Add rule and target to hub bus to subscribe to job events
         // need CfnRule as events.Rule does not allow specifying the bus ARN (to add a rule to a bus in another account)
@@ -984,7 +984,7 @@ export class DataAssetSpoke extends Construct {
                 {
                     id: 'SubscribeTarget',
                     arn: spokeEventBus.eventBusArn,
-                    roleArn: dfSpokeSubscriptionRuleTargetRole.roleArn
+                    roleArn: dmSpokeSubscriptionRuleTargetRole.roleArn
                 }
             ]
         });
@@ -1005,7 +1005,7 @@ export class DataAssetSpoke extends Construct {
                     id: 'AwsSolutions-IAM5',
                     appliesTo: [
                         'Resource::*',
-                        'Resource::arn:aws:states:<AWS::Region>:<AWS::AccountId>:execution:df-data-asset:*'],
+                        'Resource::arn:aws:states:<AWS::Region>:<AWS::AccountId>:execution:dm-data-asset:*'],
                     reason: 'The resource condition in the IAM policy is generated by CDK, this only applies to xray:PutTelemetryRecords and xray:PutTraceSegments actions.'
 
                 }
@@ -1022,15 +1022,15 @@ export class DataAssetSpoke extends Construct {
                         'Action::s3:GetBucket*',
                         'Action::s3:GetObject*',
                         'Action::s3:List*',
-                        'Resource::arn:<AWS::Partition>:s3:::<SsmParameterValuedfspokesharedbucketNameC96584B6F00A464EAD1953AFF4B05118Parameter>/*',
+                        'Resource::arn:<AWS::Partition>:s3:::<SsmParameterValuedmspokesharedbucketNameC96584B6F00A464EAD1953AFF4B05118Parameter>/*',
                         `Resource::arn:aws:databrew:${region}:${accountId}:job/*`,
-                        `Resource::arn:aws:ssm:${region}:${accountId}:parameter/df/spoke/dataAsset/*`,
+                        `Resource::arn:aws:ssm:${region}:${accountId}:parameter/dm/spoke/dataAsset/*`,
                         `Resource::arn:aws:databrew:${region}:${accountId}:dataset/*`,
                         `Resource::arn:aws:databrew:${region}:${accountId}:recipe/*`,
                         `Resource::arn:aws:glue:${region}:${accountId}:connection/*`,
-                        `Resource::arn:aws:states:${region}:${accountId}:stateMachine:df-spoke-*`,
+                        `Resource::arn:aws:states:${region}:${accountId}:stateMachine:dm-spoke-*`,
                         `Resource::arn:aws:glue:${region}:${accountId}:crawler/*`,
-                        `Resource::arn:aws:glue:${region}:${accountId}:table/{"Fn::Select":[1,{"Fn::Split":["/",{"Fn::Select":[5,{"Fn::Split":[":",{"Ref":"SsmParameterValuedfspokesharedgluedatabaseArnC96584B6F00A464EAD1953AFF4B05118Parameter"}]}]}]}]}/*`,
+                        `Resource::arn:aws:glue:${region}:${accountId}:table/{"Fn::Select":[1,{"Fn::Split":["/",{"Fn::Select":[5,{"Fn::Split":[":",{"Ref":"SsmParameterValuedmspokesharedgluedatabaseArnC96584B6F00A464EAD1953AFF4B05118Parameter"}]}]}]}]}/*`,
                         `Resource::arn:aws:glue:${region}:${accountId}:dataQualityRuleset*`
                     ],
                     reason: 'This policy is required for the lambda to access job profiling objects stored in s3.'
@@ -1073,15 +1073,15 @@ export class DataAssetSpoke extends Construct {
                         `Resource::arn:aws:databrew:${region}:${accountId}:dataset/*`,
                         `Resource::arn:aws:databrew:${region}:${accountId}:recipe/*`,
                         `Resource::arn:aws:databrew:${region}:${accountId}:job/*`,
-                        `Resource::arn:aws:iam::${accountId}:role/df-*`,
+                        `Resource::arn:aws:iam::${accountId}:role/dm-*`,
                         `Resource::arn:aws:secretsmanager:${region}:${accountId}:secret:*`,
                         `Resource::arn:aws:states:${region}:${accountId}:stateMachine:${namePrefix}-*`,
-                        `Resource::arn:aws:ssm:${region}:${accountId}:parameter/df/spoke/dataAsset/*`,
+                        `Resource::arn:aws:ssm:${region}:${accountId}:parameter/dm/spoke/dataAsset/*`,
                         `Resource::arn:aws:glue:${region}:${accountId}:crawler/*`,
                         `Resource::arn:aws:glue:${region}:${accountId}:connection/*`,
                         `Resource::arn:aws:glue:${region}:${accountId}:table/${glueDatabase.databaseName}/*`,
-                        `Resource::arn:aws:glue:${region}:${accountId}:table/{"Fn::Select":[1,{"Fn::Split":["/",{"Fn::Select":[5,{"Fn::Split":[":",{"Ref":"SsmParameterValuedfspokesharedgluedatabaseArnC96584B6F00A464EAD1953AFF4B05118Parameter"}]}]}]}]}/*`,
-                        `Resource::arn:<AWS::Partition>:s3:::<SsmParameterValuedfspokesharedbucketNameC96584B6F00A464EAD1953AFF4B05118Parameter>/*`,
+                        `Resource::arn:aws:glue:${region}:${accountId}:table/{"Fn::Select":[1,{"Fn::Split":["/",{"Fn::Select":[5,{"Fn::Split":[":",{"Ref":"SsmParameterValuedmspokesharedgluedatabaseArnC96584B6F00A464EAD1953AFF4B05118Parameter"}]}]}]}]}/*`,
+                        `Resource::arn:<AWS::Partition>:s3:::<SsmParameterValuedmspokesharedbucketNameC96584B6F00A464EAD1953AFF4B05118Parameter>/*`,
                         `Resource::arn:aws:glue:${region}:${accountId}:dataQualityRuleset*`
 
                     ],

@@ -1,18 +1,18 @@
 {
-	"name": "@df/cli",
+	"name": "@dm/cli",
 	"module": "index.ts",
 	"type": "module",
 	"bin": {
-		"data-fabric": "src/index.ts"
+		"data-management": "src/index.ts"
 	},
 	"scripts": {
 		"typecheck": "npx tsc -b",
 		"build:base": "bun build --compile --minify --sourcemap src/index.ts ",
-		"build:linux-x64": "bun run build:base -- --outfile bin/linux-x64/data-fabric --target=bun-linux-x64",
-		"build:linux-arm64": "bun run build:base -- --outfile bin/linux-arm64/data-fabric --target=bun-linux-arm64",
-		"build:windows-x64": "bun run build:base -- --outfile bin/windows-x64/data-fabric --target=bun-windows-x64",
-		"build:darwin-arm64": "bun run build:base -- --outfile bin/darwin-arm64/data-fabric --target=bun-darwin-arm64",
-		"build:darwin-x64": "bun run build:base -- --outfile bin/darwin-x64/data-fabric --target=bun-darwin-x64",
+		"build:linux-x64": "bun run build:base -- --outfile bin/linux-x64/data-management --target=bun-linux-x64",
+		"build:linux-arm64": "bun run build:base -- --outfile bin/linux-arm64/data-management --target=bun-linux-arm64",
+		"build:windows-x64": "bun run build:base -- --outfile bin/windows-x64/data-management --target=bun-windows-x64",
+		"build:darwin-arm64": "bun run build:base -- --outfile bin/darwin-arm64/data-management --target=bun-darwin-arm64",
+		"build:darwin-x64": "bun run build:base -- --outfile bin/darwin-x64/data-management --target=bun-darwin-x64",
 		"build:all": "bun run build:linux-x64 && bun run build:linux-arm64 && bun run build:windows-x64 && bun run build:darwin-arm64 && bun run build:darwin-x64",
 		"start": "bun src/index.ts",
 		"cdk": "cdk"
@@ -34,7 +34,7 @@
 		"@inquirer/confirm": "^4.0.1",
 		"@inquirer/prompts": "^6.0.1",
 		"@inquirer/select": "^3.0.1",
-		"@microsoft/rush-lib": "^5.136.1",
+		"@microsoft/rush-lib": "^5.140.1",
 		"ajv": "^8.17.1",
 		"awilix": "^10.0.2",
 		"clipboardy": "^4.0.0",

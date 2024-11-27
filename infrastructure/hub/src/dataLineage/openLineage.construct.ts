@@ -48,7 +48,7 @@ export class OpenLineage extends Construct {
     constructor(scope: Construct, id: string, props: OpenLineageConstructProperties) {
         super(scope, id);
 
-        const namePrefix = `df`;
+        const namePrefix = `dm`;
 
         const computeCluster = Cluster.fromClusterAttributes(this, 'ComputeCluster', {
             vpc: props.vpc,
@@ -91,7 +91,7 @@ export class OpenLineage extends Construct {
             ]
         });
 
-        const dnsSubDomain = `df`;
+        const dnsSubDomain = `dm`;
 
         const openlineageNamespace = new PrivateDnsNamespace(this, 'OpenLineageNamespace', {
             name: dnsSubDomain,

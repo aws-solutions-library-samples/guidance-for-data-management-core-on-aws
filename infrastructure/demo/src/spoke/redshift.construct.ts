@@ -26,20 +26,20 @@ export interface RedShiftConstructProperties {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const redshiftSecretNameParameter = `/df-demo/spoke/redshift/secretName`;
+export const redshiftSecretNameParameter = `/dm-demo/spoke/redshift/secretName`;
 
-export const redshiftSecretArnParameter = `/df-demo/spoke/redshift/secretArn`;
+export const redshiftSecretArnParameter = `/dm-demo/spoke/redshift/secretArn`;
 
-export const redshiftSecurityGroupIdParameter = `/df-demo/spoke/redshift/securityGroupId`;
+export const redshiftSecurityGroupIdParameter = `/dm-demo/spoke/redshift/securityGroupId`;
 
-export const redshiftWorkgroupNameParameter = `/df-demo/spoke/redshift/workgroupName`;
+export const redshiftWorkgroupNameParameter = `/dm-demo/spoke/redshift/workgroupName`;
 
-export const redshiftSchemaNameParameter = `/df-demo/spoke/redshift/schemaName`;
+export const redshiftSchemaNameParameter = `/dm-demo/spoke/redshift/schemaName`;
 
-export const redshiftDatabaseNameParameter = `/df-demo/spoke/redshift/databaseName`;
+export const redshiftDatabaseNameParameter = `/dm-demo/spoke/redshift/databaseName`;
 
-export const redshiftNamespaceNameParameter = `/df-demo/spoke/redshift/namespaceName`;
-export const redshiftNamespaceArnParameter = `/df-demo/spoke/redshift/namespaceArn`;
+export const redshiftNamespaceNameParameter = `/dm-demo/spoke/redshift/namespaceName`;
+export const redshiftNamespaceArnParameter = `/dm-demo/spoke/redshift/namespaceArn`;
 
 export class RedShiftConstruct extends Construct {
 	readonly workgroupPort = '5439';
@@ -47,7 +47,7 @@ export class RedShiftConstruct extends Construct {
 	constructor(scope: Construct, id: string, props: RedShiftConstructProperties) {
 		super(scope, id);
 
-		const namePrefix = `df-demo-spoke`;
+		const namePrefix = `dm-demo-spoke`;
 		const databaseName = DATABASE_NAME;
 
 		const namespace = new CfnNamespace(this, 'DataStoreNamespace', {
@@ -79,37 +79,37 @@ export class RedShiftConstruct extends Construct {
 
 		new StringParameter(this, `DataStoreSecurityGroupIdParameter`, {
 			parameterName: redshiftSecurityGroupIdParameter,
-			description: `df-demo redshift security group id )`,
+			description: `dm-demo redshift security group id )`,
 			stringValue: sg.securityGroupId,
 		});
 
 		new StringParameter(this, `DataStoreWorkGroupNameParameter`, {
 			parameterName: redshiftWorkgroupNameParameter,
-			description: `df-demo redshift workgroup name`,
+			description: `dm-demo redshift workgroup name`,
 			stringValue: workgroup.workgroupName,
 		});
 
 		new StringParameter(this, `DataStoreNamespaceNameParameter`, {
 			parameterName: redshiftNamespaceNameParameter,
-			description: `df-demo redshift namespace `,
+			description: `dm-demo redshift namespace `,
 			stringValue: namespace.namespaceName,
 		});
 
 		new StringParameter(this, `DataStoreNamespaceArnParameter`, {
 			parameterName: redshiftNamespaceArnParameter,
-			description: `df-demo redshift namespace `,
+			description: `dm-demo redshift namespace `,
 			stringValue: namespace.attrNamespaceNamespaceArn,
 		});
 
 		new StringParameter(this, `DataStoreDatabaseNameParameter`, {
 			parameterName: redshiftDatabaseNameParameter,
-			description: `df-demo redshift database name `,
+			description: `dm-demo redshift database name `,
 			stringValue: databaseName,
 		});
 
 		new StringParameter(this, `DataStoreSecretNameParameter`, {
 			parameterName: redshiftSecretNameParameter,
-			description: `df-demo redshift secret name `,
+			description: `dm-demo redshift secret name `,
 			stringValue: `redshift!${namespace.namespaceName}-admin`,
 		});
 
@@ -119,7 +119,7 @@ export class RedShiftConstruct extends Construct {
 		const getSecretArnCustomResource = new NodejsFunction(this, 'GetSecretArnCustomResource', {
 			...commonLambdaOptions,
 			functionName: `${namePrefix}-get-secret-arn-cr`,
-			description: `df-demo get secret arn custom resource`,
+			description: `dm-demo get secret arn custom resource`,
 			entry: path.join(__dirname, 'custom-resources', 'get-secret-arn.ts'),
 			handler: 'handler',
 			memorySize: 256,
@@ -165,7 +165,7 @@ export class RedShiftConstruct extends Construct {
 
 		new StringParameter(this, `DataStoreSecretArnParameter`, {
 			parameterName: redshiftSecretArnParameter,
-			description: `df-demo redshift secret arn `,
+			description: `dm-demo redshift secret arn `,
 			stringValue: secretArn,
 		});
 
@@ -175,7 +175,7 @@ export class RedShiftConstruct extends Construct {
 		const createSchemaCustomResource = new NodejsFunction(this, 'CreateSchemaCustomResource', {
 			...commonLambdaOptions,
 			functionName: `${namePrefix}-create-schema-cr`,
-			description: `df-demo create schema custom resource`,
+			description: `dm-demo create schema custom resource`,
 			entry: path.join(__dirname, 'custom-resources', 'create-redshift-schema.ts'),
 			handler: 'handler',
 			memorySize: 256,
@@ -225,7 +225,7 @@ export class RedShiftConstruct extends Construct {
 
 		new StringParameter(this, `RedshiftSchemaNameParameter`, {
 			parameterName: redshiftSchemaNameParameter,
-			description: `df-demo redshift schema name `,
+			description: `dm-demo redshift schema name `,
 			stringValue: 'demo',
 		});
 
@@ -260,7 +260,7 @@ export class RedShiftConstruct extends Construct {
 						'Resource::<RedshiftConstructGetSecretArnCustomResource8F188461.Arn>:*',
 						'Resource::<RedshiftConstructCreateSchemaCustomResource51D10E25.Arn>:*',
 						`Resource::arn:aws:secretsmanager:${region}:${accountId}:secret:redshift!${namespace.namespaceName}*`,
-						`Resource::arn:aws:states:${region}:${accountId}:stateMachine:df-demo-*`,
+						`Resource::arn:aws:states:${region}:${accountId}:stateMachine:dm-demo-*`,
 					],
 					reason: 'The resource condition in the IAM policy is generated by CDK, this only applies to xray:PutTelemetryRecords and xray:PutTraceSegments actions.',
 				},

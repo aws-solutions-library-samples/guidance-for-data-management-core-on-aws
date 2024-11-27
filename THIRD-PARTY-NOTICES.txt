@@ -1,4 +1,4 @@
-Data Fabric on AWS uses third party material from the projects listed below.
+Data Management on AWS uses third party material from the projects listed below.
 The original copyright notice and the license under which Amazon
 received such third party material are set forth below. Amazon
 reserves all other rights not expressly granted, whether by
@@ -7,7 +7,7 @@ implication, estoppel or otherwise.
 THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
 Do Not Translate or Localize
 
-Data Fabric on AWS incorporates third party material from the projects listed below.
+Data Management on AWS incorporates third party material from the projects listed below.
 The original copyright notice and the license under which Amazon received
 such third party material are set forth below. Amazon reserves all other
 rights not expressly granted, whether by implication, estoppel or otherwise.

@@ -19,7 +19,7 @@ import { DeleteDemoTasksHandlerChain, DeleteHubTasksHandlerChain, DeleteSpokeTas
 
 const command = 'delete';
 
-const describe = 'delete Data Fabric from a single AWS Account.';
+const describe = 'delete Data Management from a single AWS Account.';
 
 const handler = async () => {
 	const spinner = ora({ discardStdin: false });

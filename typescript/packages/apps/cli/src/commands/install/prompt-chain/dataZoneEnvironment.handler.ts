@@ -42,8 +42,8 @@ export class DataZoneEnvironmentPromptHandler extends PromptHandler {
 	private async discoverDataZoneEnvironments(answers: Answers, spinner: Ora) {
 		spinner.start('Retrieving Domain environments');
 
-		const dataLakeBluePrintId = await getParameterValue('hub', 'datazone/dataLakeBluePrintId', 'df-demo');
-		const redshiftBluePrintId = await getParameterValue('hub', 'datazone/redshiftBluePrintId', 'df-demo');
+		const dataLakeBluePrintId = await getParameterValue('hub', 'datazone/dataLakeBluePrintId', 'dm-demo');
+		const redshiftBluePrintId = await getParameterValue('hub', 'datazone/redshiftBluePrintId', 'dm-demo');
 		const response = await this.dataZoneClient.send(
 			new ListEnvironmentProfilesCommand({ domainIdentifier: answers.dataZoneDomainId, projectIdentifier: answers.dataZoneProjectId })
 		);

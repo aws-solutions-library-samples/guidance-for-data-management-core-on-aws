@@ -17,7 +17,7 @@ import type { Answers } from '../commands/answers.ts';
 import { diContainer } from '../di';
 import { switchToICli } from './shell.ts';
 
-const prefix = `/df/cli/shared/`;
+const prefix = `/dm/cli/shared/`;
 const answersPath = `answers.json`;
 
 const getAnswers = async (): Promise<Record<string, never>> => {

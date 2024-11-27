@@ -20,11 +20,11 @@ export class GlueSpoke extends Construct {
 
 
     
-		const databaseName = `df-spoke-${props.accountId}-${props.region}`;
+		const databaseName = `dm-spoke-${props.accountId}-${props.region}`;
 
     const glueDatabase = new Database(this,`${databaseName}`,{
       databaseName: databaseName,
-      description: `The DF spokes glue database used for internal functionality`
+      description: `The DM spokes glue database used for internal functionality`
     });
 
     this.glueDatabaseName = glueDatabase.databaseName;

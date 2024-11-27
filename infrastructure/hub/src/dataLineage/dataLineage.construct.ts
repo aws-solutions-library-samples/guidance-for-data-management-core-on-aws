@@ -7,8 +7,8 @@ import { Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Duration, Stack } from 'aws-cdk-lib';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { dfEventBusName, getLambdaArchitecture, OrganizationUnitPath } from '@df/cdk-common';
-import { DATA_LINEAGE_DIRECT_HUB_INGESTION_REQUEST_EVENT, DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT, DATA_LINEAGE_HUB_EVENT_SOURCE, DATA_LINEAGE_SPOKE_EVENT_SOURCE } from '@df/events';
+import { dmEventBusName, getLambdaArchitecture, OrganizationUnitPath } from '@dm/cdk-common';
+import { DATA_LINEAGE_DIRECT_HUB_INGESTION_REQUEST_EVENT, DATA_LINEAGE_DIRECT_SPOKE_INGESTION_REQUEST_EVENT, DATA_LINEAGE_HUB_EVENT_SOURCE, DATA_LINEAGE_SPOKE_EVENT_SOURCE } from '@dm/events';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import type { IVpc } from 'aws-cdk-lib/aws-ec2';
@@ -30,8 +30,8 @@ export class DataLineage extends Construct {
     constructor(scope: Construct, id: string, props: DataLineageConstructProperties) {
         super(scope, id);
 
-        const namePrefix = `df`;
-        const eventBus = EventBus.fromEventBusName(this, 'HubEventBus', dfEventBusName);
+        const namePrefix = `dm`;
+        const eventBus = EventBus.fromEventBusName(this, 'HubEventBus', dmEventBusName);
         const accountId = Stack.of(this).account;
         const region = Stack.of(this).region;
 
@@ -61,7 +61,7 @@ export class DataLineage extends Construct {
             memorySize: 512,
             logRetention: RetentionDays.ONE_WEEK,
             environment: {
-                EVENT_BUS_NAME: dfEventBusName,
+                EVENT_BUS_NAME: dmEventBusName,
                 MARQUEZ_URL: props.marquezUrl
             },
             vpc: props.vpc,
@@ -102,12 +102,12 @@ export class DataLineage extends Construct {
         );
 
         new CfnEventBusPolicy(this, 'DataLineageEventBusPolicy', {
-            eventBusName: dfEventBusName,
+            eventBusName: dmEventBusName,
             statementId: 'AllowSpokeAccountsToPutLineageEvents',
             statement: {
                 Effect: Effect.ALLOW,
                 Action: ['events:PutEvents'],
-                Resource: [`arn:aws:events:${region}:${accountId}:event-bus/${dfEventBusName}`],
+                Resource: [`arn:aws:events:${region}:${accountId}:event-bus/${dmEventBusName}`],
                 Principal: '*',
                 Condition: {
                     'StringEquals': {

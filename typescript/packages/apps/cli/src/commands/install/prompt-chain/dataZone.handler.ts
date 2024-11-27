@@ -76,8 +76,8 @@ export class DataZonePromptHandler extends PromptHandler {
 			spinner.succeed('Using DataZone Domain: ' + answers.dataZoneDomainName);
 		}
 
-		// We check if we are using the default df-demo domain by comparing the description. if not we will not deploy
-		if (answers?.dataZoneDomainDescription !== 'df-demo:Data Fabric') {
+		// We check if we are using the default dm-demo domain by comparing the description. if not we will not deploy
+		if (answers?.dataZoneDomainDescription !== 'dm-demo:Data Management') {
 			answers.deployDemoHub = false;
 		}
 	}

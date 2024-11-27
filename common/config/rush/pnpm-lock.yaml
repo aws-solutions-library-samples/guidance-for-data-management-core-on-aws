@@ -36,13 +36,13 @@ importers:
       '@aws-sdk/client-sso-admin':
         specifier: 3.649.0
         version: 3.649.0
-      '@df/cdk-common':
+      '@dm/cdk-common':
         specifier: workspace:*
         version: link:../../typescript/packages/libraries/cdk-common
-      '@df/events':
+      '@dm/events':
         specifier: workspace:*
         version: link:../../typescript/packages/libraries/events
-      '@df/infrastructure-hub':
+      '@dm/infrastructure-hub':
         specifier: workspace:*
         version: link:../hub
       awilix:
@@ -130,10 +130,10 @@ importers:
       '@aws-sdk/client-sso-admin':
         specifier: 3.649.0
         version: 3.649.0
-      '@df/cdk-common':
+      '@dm/cdk-common':
         specifier: workspace:*
         version: link:../../typescript/packages/libraries/cdk-common
-      '@df/events':
+      '@dm/events':
         specifier: workspace:*
         version: link:../../typescript/packages/libraries/events
       awilix:
@@ -203,10 +203,10 @@ importers:
       '@aws-cdk/aws-glue-alpha':
         specifier: 2.157.0-alpha.0
         version: 2.157.0-alpha.0(aws-cdk-lib@2.160.0(constructs@10.3.0))(constructs@10.3.0)
-      '@df/cdk-common':
+      '@dm/cdk-common':
         specifier: workspace:*
         version: link:../../typescript/packages/libraries/cdk-common
-      '@df/events':
+      '@dm/events':
         specifier: workspace:*
         version: link:../../typescript/packages/libraries/events
       aws-cdk-lib:
@@ -309,19 +309,19 @@ importers:
       '@aws-sdk/types':
         specifier: 3.649.0
         version: 3.649.0
-      '@df/cdk-common':
+      '@dm/cdk-common':
         specifier: workspace:*
         version: link:../../libraries/cdk-common
-      '@df/dynamodb-utils':
+      '@dm/dynamodb-utils':
         specifier: workspace:*
         version: link:../../libraries/dynamodb-utils
-      '@df/events':
+      '@dm/events':
         specifier: workspace:*
         version: link:../../libraries/events
-      '@df/resource-api-base':
+      '@dm/resource-api-base':
         specifier: workspace:*
         version: link:../../libraries/resource-api-base
-      '@df/validators':
+      '@dm/validators':
         specifier: workspace:*
         version: link:../../libraries/validators
       '@fastify/awilix':
@@ -436,13 +436,13 @@ importers:
 
   ../../typescript/packages/apps/dataLineage:
     dependencies:
-      '@df/clients':
+      '@dm/clients':
         specifier: workspace:*
         version: link:../../libraries/clients
-      '@df/events':
+      '@dm/events':
         specifier: workspace:*
         version: link:../../libraries/events
-      '@df/validators':
+      '@dm/validators':
         specifier: workspace:*
         version: link:../../libraries/validators
       '@fastify/awilix':
@@ -682,7 +682,7 @@ importers:
 
   ../../typescript/packages/libraries/clients:
     dependencies:
-      '@df/events':
+      '@dm/events':
         specifier: workspace:*
         version: link:../events
       axios:
@@ -890,7 +890,7 @@ importers:
       '@aws-sdk/util-dynamodb':
         specifier: ~3
         version: 3.658.1(@aws-sdk/client-dynamodb@3.649.0)
-      '@df/lambda-invoker':
+      '@dm/lambda-invoker':
         specifier: workspace:*
         version: link:../lambda-invoker
       '@fastify/awilix':

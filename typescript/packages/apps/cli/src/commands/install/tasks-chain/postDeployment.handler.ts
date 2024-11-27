@@ -104,6 +104,7 @@ export class PostDeploymentTasksHandler extends SimpleTasksHandler {
 						new RegisterResourceCommand({
 							ResourceArn: answers.spokeBucketArn,
 							RoleArn: answers.dataZoneGlueAccessRoleArn,
+							HybridAccessEnabled: true,
 						})
 					);
 				}

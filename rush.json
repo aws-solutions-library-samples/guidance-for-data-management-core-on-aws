@@ -125,7 +125,8 @@
 	 *
 	 * Rush normally prints a warning if it detects a pre-LTS Node.js version.  If you are testing
 	 * pre-LTS versions in preparation for supporting the first LTS version, you can use this setting
-	 * to disable Rush's warning.
+	 * to disable Rush's warning.npm notice \nnpm notice New minor version of npm available! 10.2.4 -> 10.9.0\nnpm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.9.0>\nnpm notice Run `npm install -g npm@10.9.0` to update!\nnpm notice \n\"@dm/validators\" completed with warnings in 3.46 seconds.\nnpm notice \nnpm notice New minor version of npm available! 10.2.4 -> 10.9.0\nnpm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.9.0>\nnpm notice Run `npm install -g npm@10.9.0` to update!\nnpm notice \n\"@dm/events\" completed with warnings in 5.58 seconds.\nnpm notice \nnpm notice New minor version of npm available! 10.2.4 -> 10.9.0\nnpm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.9.0>\nnpm notice Run `npm install -g npm@10.9.0` to update!\nnpm notice \n\"@dm/discovery\" completed with warnings in 9.08 seconds.\nOperations succeeded with warnings.\n\n",
+  "stdout": "Found configuration in /Users/bahavar/workspace/sdf/df-core/rush.json\n\n\n\u001b[1mRush Multi-Project Build Tool 5.136.1\u001b[33m\u001b[39m\u001b[22m\u001b[36m - https://rushjs.io\u001b[39m\nNode.js version is 20.11.1 (LTS)\n\nFound configuration in /Users/bahavar/workspace/sdf/df-core/rush.json\n\nStarting \"rush build\"\n\nAnalyzing repo state... DONE (0.11 seconds)\n\nExecuting a maximum of 12 simultaneous processes...\n\n==[ @dm/validators ]==============================================[ 1 of 13 ]==\n\n==[ @dm/dynamodb-utils ]==========================================[ 2 of 13 ]==\n\"@dm/dynamodb-utils\" completed successfully in 0.98 seconds.\n\n==[ @dm/events ]==================================================[ 3 of 13 ]==\n\n==[ @dm/lambda-invoker ]==========================================[ 4 of 13 ]==\n\"@dm/lambda-invoker\" completed successfully in 7.64 seconds.\n\n==[ @dm/discovery ]===============================================[ 5 of 13 ]==\n\n==[ @dm/clients ]=================================================[ 6 of 13 ]==\n\"@dm/clients\" completed successfully in 3.07 seconds.\n\n==[ @dm/cdk-common ]==============================================[ 7 of 13 ]==\n\"@dm/cdk-common\" completed successfully in 14.85 seconds.\n\n==[ @dm/resource-api-base ]=======================================[ 8 of 13 ]==\n\"@dm/resource-api-base\" completed successfully in 4.28 seconds.\n\n==[ @dm/dataLineage ]=============================================[ 9 of 13 ]==\n\"@dm/dataLineage\" completed successfully in 4.40 seconds.\n\n==[ @dm/infrastructure-hub ]=====================================[ 10 of 13 ]==\n\"@dm/infrastructure-hub\" completed successfully in 12.18 seconds.\n\n==[ @dm/infrastructure-spoke ]===================================[ 11 of 13 ]==\n\"@dm/infrastructure-spoke\" completed successfully in 11.23 seconds.\n\n==[ @dm/dataAsset ]==============================================[ 12 of 13 ]==\n\"@dm/dataAsset\" completed successfully in 14.10 seconds.\n\n==[ @dm/infrastructure-demo ]====================================[ 13 of 13 ]==\n\"@dm/infrastructure-demo\" completed successfully in 7.91 seconds.\n\n\n\n==[ SUCCESS: 10 operations ]===================================================\n\nThese operations completed successfully:\n  @dm/cdk-common              14.85 seconds\n  @dm/clients                 3.07 seconds\n  @dm/dataAsset               14.10 seconds\n  @dm/dynamodb-utils          0.98 seconds\n  @dm/resource-api-base       4.28 seconds\n  @dm/lambda-invoker          7.64 seconds\n  @dm/dataLineage             4.40 seconds\n  @dm/infrastructure-demo     7.91 seconds\n  @dm/infrastructure-hub      12.18 seconds\n  @dm/infrastructure-spoke    11.23 seconds\n\n==[ SUCCESS WITH WARNINGS: 3 operations ]======================================\n\n--[ WARNING: @dm/events ]------------------------------------[ 5.58 seconds ]--\n\nnpm notice \nnpm notice New minor version of npm available! 10.2.4 -> 10.9.0\nnpm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.9.0>\nnpm notice Run `npm install -g npm@10.9.0` to update!\nnpm notice \n\n--[ WARNING: @dm/validators ]--------------------------------[ 3.46 seconds ]--\n\nnpm notice \nnpm notice New minor version of npm available! 10.2.4 -> 10.9.0\nnpm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.9.0>\nnpm notice Run `npm install -g npm@10.9.0` to update!\nnpm notice \n\n--[ WARNING: @dm/discovery ]---------------------------------[ 9.09 seconds ]--\n\nnpm notice \nnpm notice New minor version of npm available! 10.2.4 -> 10.9.0\nnpm notice Changelog: <https://github.com/npm/cli/releases/tag/v10.9.0>\nnpm notice Run `npm install -g npm@10.9.0` to update!\nnpm notice \n\n\nrush build (35.09 seconds)\n
 	 */
 	// "suppressNodeLtsWarning": false,
 	/**
@@ -271,7 +272,7 @@
 		 * your PR branch, and in this situation "rush change" will also automatically invoke "git fetch"
 		 * to retrieve the latest activity for the remote main branch.
 		 */
-		"url": "git@github.com:aws-solutions-library-samples/guidance-for-data-fabric-on-aws.git",
+		"url": "git@github.com:aws-solutions-library-samples/guidance-for-data-management-core-on-aws.git",
 		/**
 		 * The default branch name. This tells "rush change" which remote branch to compare against.
 		 * The default value is "main"
@@ -367,79 +368,79 @@
 	 */
 	"projects": [
 		{
-			"packageName": "@df/infrastructure-hub",
+			"packageName": "@dm/infrastructure-hub",
 			"projectFolder": "infrastructure/hub",
 			"reviewCategory": "production",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/infrastructure-spoke",
+			"packageName": "@dm/infrastructure-spoke",
 			"projectFolder": "infrastructure/spoke",
 			"reviewCategory": "production",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/infrastructure-demo",
+			"packageName": "@dm/infrastructure-demo",
 			"projectFolder": "infrastructure/demo",
 			"reviewCategory": "production",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/cdk-common",
+			"packageName": "@dm/cdk-common",
 			"projectFolder": "typescript/packages/libraries/cdk-common",
 			"reviewCategory": "production",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/clients",
+			"packageName": "@dm/clients",
 			"projectFolder": "typescript/packages/libraries/clients",
 			"reviewCategory": "library",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/validators",
+			"packageName": "@dm/validators",
 			"projectFolder": "typescript/packages/libraries/validators",
 			"reviewCategory": "library",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/events",
+			"packageName": "@dm/events",
 			"projectFolder": "typescript/packages/libraries/events",
 			"reviewCategory": "library",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/dynamodb-utils",
+			"packageName": "@dm/dynamodb-utils",
 			"projectFolder": "typescript/packages/libraries/dynamodb-utils",
 			"reviewCategory": "library",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/lambda-invoker",
+			"packageName": "@dm/lambda-invoker",
 			"projectFolder": "typescript/packages/libraries/lambda-invoker",
 			"reviewCategory": "library",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/resource-api-base",
+			"packageName": "@dm/resource-api-base",
 			"projectFolder": "typescript/packages/libraries/resource-api-base",
 			"reviewCategory": "library",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/discovery",
+			"packageName": "@dm/discovery",
 			"projectFolder": "typescript/packages/apps/discovery",
 			"reviewCategory": "production",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/dataLineage",
+			"packageName": "@dm/dataLineage",
 			"projectFolder": "typescript/packages/apps/dataLineage",
 			"reviewCategory": "production",
 			"shouldPublish": true
 		},
 		{
-			"packageName": "@df/dataAsset",
+			"packageName": "@dm/dataAsset",
 			"projectFolder": "typescript/packages/apps/dataAsset",
 			"reviewCategory": "production",
 			"shouldPublish": true

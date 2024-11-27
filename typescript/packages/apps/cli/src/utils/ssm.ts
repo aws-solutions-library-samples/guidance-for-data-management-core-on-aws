@@ -15,7 +15,7 @@ import { GetParameterCommand } from '@aws-sdk/client-ssm';
 import { diContainer } from '../di.ts';
 
 const getParameterValue = async (module: string, name: string, project?: string): Promise<string | undefined> => {
-	const key = `/${project ? project : 'df'}/${module}/${name}`;
+	const key = `/${project ? project : 'dm'}/${module}/${name}`;
 
 	const cradle = diContainer.cradle;
 

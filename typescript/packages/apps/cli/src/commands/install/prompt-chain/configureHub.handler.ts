@@ -40,7 +40,7 @@ export class ConfigureHubPromptHandler extends PromptHandler {
 
 	private async retrievingHubConfiguration(answers: Answers, spinner: Ora) {
 		// Get Identity store role from management account
-		answers.identityStoreRoleArn = await getParameterValue('management', 'identityStoreRole', 'df-demo');
+		answers.identityStoreRoleArn = await getParameterValue('management', 'identityStoreRole', 'dm-demo');
 
 		// Get cdk execution role from spoke account
 		await this.getCDKExecutionRole(answers, spinner);
@@ -55,7 +55,7 @@ export class ConfigureHubPromptHandler extends PromptHandler {
 			const userPoolDomain = await getParameterValue('shared', 'cognito/userPoolDomain');
 			const userPoolId = await getParameterValue('shared', 'cognito/userPoolId');
 			bomb(
-				`Please setup your IAM Identity Center application\n You will need the following information to set it up:\n Cognito UserPoolDomain: ${userPoolDomain} \n Cognito User Pool Id: ${userPoolId}\n Setup instruction can be found here: \n https://github.com/aws-solutions-library-samples/guidance-for-data-fabric-on-aws/tree/main?tab=readme-ov-file#step-2-configure-iam-identity-center `
+				`Please setup your IAM Identity Center application\n You will need the following information to set it up:\n Cognito UserPoolDomain: ${userPoolDomain} \n Cognito User Pool Id: ${userPoolId}\n Setup instruction can be found here: \n https://github.com/aws-solutions-library-samples/guidance-for-data-management-core-on-aws/tree/main?tab=readme-ov-file#step-2-configure-iam-identity-center `
 			);
 		}
 

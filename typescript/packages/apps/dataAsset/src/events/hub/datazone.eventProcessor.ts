@@ -1,10 +1,10 @@
-import { validateNotEmpty } from '@df/validators';
+import { validateNotEmpty } from '@dm/validators';
 import type { BaseLogger } from 'pino';
 import { SendTaskSuccessCommand, type SFNClient } from '@aws-sdk/client-sfn';
 import { TaskType } from '../../stepFunction/tasks/models.js';
 import type { S3Utils } from '../../common/s3Utils.js';
 import { ListDataSourceRunActivitiesCommand, type DataZoneClient } from '@aws-sdk/client-datazone';
-import type { DataSourceRunStateChangeEvent } from '@df/events';
+import type { DataSourceRunStateChangeEvent } from '@dm/events';
 
 export class DataZoneEventProcessor {
     constructor(

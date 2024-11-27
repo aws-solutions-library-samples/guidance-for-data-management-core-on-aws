@@ -1,6 +1,6 @@
 import { Stack } from 'aws-cdk-lib';
 import { CfnDomain, CfnEnvironment, CfnEnvironmentBlueprintConfiguration, CfnEnvironmentProfile, CfnProject, CfnProjectMembership, CfnUserProfile } from 'aws-cdk-lib/aws-datazone';
-import { Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { CompositePrincipal, Effect, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { NagSuppressions } from 'cdk-nag';
 import { Construct } from 'constructs';
@@ -8,17 +8,18 @@ import { Construct } from 'constructs';
 export interface DatazoneConstructProperties {
 	bucketName: string;
 	userIdentifier?: string;
+	dataZoneAdminRoleArn?: string;
 	deployRedshift?: boolean;
 }
 
-export const domainIdParameter = `/df-demo/hub/datazone/domainId`;
-export const projectIdParameter = `/df-demo/hub/datazone/projectId`;
-export const dataLakeBluePrintIdParameter = `/df-demo/hub/datazone/dataLakeBluePrintId`;
-export const dataLakeEnvironmentIdParameter = `/df-demo/hub/datazone/dataLakeEnvironmentId`;
-export const dataLakeEnvironmentNameParameter = `/df-demo/hub/datazone/dataLakeEnvironmentName`;
-export const glueAccessRoleArnParameter = `/df-demo/hub/datazone/glueRoleArn`;
-export const redshiftAccessRoleArnParameter = `/df-demo/hub/datazone/redshiftRoleArn`;
-export const redshiftBluePrintIdParameter = `/df-demo/hub/datazone/redshiftBluePrintId`;
+export const domainIdParameter = `/dm-demo/hub/datazone/domainId`;
+export const projectIdParameter = `/dm-demo/hub/datazone/projectId`;
+export const dataLakeBluePrintIdParameter = `/dm-demo/hub/datazone/dataLakeBluePrintId`;
+export const dataLakeEnvironmentIdParameter = `/dm-demo/hub/datazone/dataLakeEnvironmentId`;
+export const dataLakeEnvironmentNameParameter = `/dm-demo/hub/datazone/dataLakeEnvironmentName`;
+export const glueAccessRoleArnParameter = `/dm-demo/hub/datazone/glueRoleArn`;
+export const redshiftAccessRoleArnParameter = `/dm-demo/hub/datazone/redshiftRoleArn`;
+export const redshiftBluePrintIdParameter = `/dm-demo/hub/datazone/redshiftBluePrintId`;
 
 export class DatazoneConstruct extends Construct {
 	constructor(scope: Construct, id: string, props: DatazoneConstructProperties) {
@@ -31,8 +32,8 @@ export class DatazoneConstruct extends Construct {
 		 * Create the role for data zone account
 		 * In a production setup, this role would need to be created in the hub account (where datazone exists)
 		 */
-		const dataZoneExecutionRole = new Role(this, 'dataFabricDomainExecutionRole', {
-			roleName: 'dataFabricDomainExecutionRole',
+		const dataZoneExecutionRole = new Role(this, 'dataManagementDomainExecutionRole', {
+			roleName: 'dataManagementDomainExecutionRole',
 			assumedBy: new ServicePrincipal('datazone.amazonaws.com', {
 				conditions: {
 					StringEquals: {
@@ -47,6 +48,9 @@ export class DatazoneConstruct extends Construct {
 				{
 					managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AmazonDataZoneDomainExecutionRolePolicy',
 				},
+				{
+					managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole',
+				},
 			],
 		});
 		const getUserPolicy = new PolicyStatement({
@@ -58,7 +62,7 @@ export class DatazoneConstruct extends Construct {
 		dataZoneExecutionRole.addToPolicy(getUserPolicy);
 
 		const dataZoneProvisioningRole = new Role(this, 'dataZoneProvisioningRole', {
-			roleName: 'dataFabricDomainProvisioningRole',
+			roleName: 'dataManagementDomainProvisioningRole',
 			assumedBy: new ServicePrincipal('datazone.amazonaws.com', {
 				conditions: {
 					StringEquals: {
@@ -103,12 +107,14 @@ export class DatazoneConstruct extends Construct {
 			resources: ['*'],
 		});
 
+		dataZoneExecutionRole.addToPolicy(dataLakeDeletePolicy);
+
 		dataZoneProvisioningRole.addToPolicy(dataLakeDeletePolicy);
 
 		const domain = new CfnDomain(this, 'DatazoneDomain', {
 			domainExecutionRole: dataZoneExecutionRole.roleArn,
-			name: 'Data Fabric',
-			description: 'df-demo:Data Fabric',
+			name: 'Data Management',
+			description: 'dm-demo:Data Management',
 			singleSignOn: {
 				type: 'IAM_IDC',
 				userAssignment: 'AUTOMATIC',
@@ -124,19 +130,31 @@ export class DatazoneConstruct extends Construct {
 
 		const dataZoneGlueAccessRole = new Role(this, 'dataZoneGlueAccessRole', {
 			roleName: `AmazonDataZoneGlueAccess-${region}-${domain.attrId}`,
-			assumedBy: new ServicePrincipal('datazone.amazonaws.com', {
-				conditions: {
-					StringEquals: {
-						'aws:SourceAccount': accountId,
+			assumedBy: new CompositePrincipal(
+				new ServicePrincipal('datazone.amazonaws.com', {
+					conditions: {
+						StringEquals: {
+							'aws:SourceAccount': accountId,
+						},
+						ArnEquals: {
+							'aws:SourceArn': `arn:aws:datazone:${region}:${accountId}:domain/${domain.attrId}`,
+						},
 					},
-					ArnEquals: {
-						'aws:SourceArn': `arn:aws:datazone:${region}:${accountId}:domain/${domain.attrId}`,
+				}),
+				new ServicePrincipal('lakeformation.amazonaws.com', {
+					conditions: {
+						StringEquals: {
+							'aws:SourceAccount': accountId,
+						},
 					},
-				},
-			}),
+				})
+			),
 			managedPolicies: [
 				{
 					managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AmazonDataZoneGlueManageAccessRolePolicy',
+				},
+				{
+					managedPolicyArn: 'arn:aws:iam::aws:policy/AmazonS3FullAccess',
 				},
 			],
 		});
@@ -183,8 +201,8 @@ export class DatazoneConstruct extends Construct {
 		// });
 
 		const project = new CfnProject(this, 'DatazoneProject', {
-			name: 'Data Fabric',
-			description: 'Data Fabric',
+			name: 'Data Management',
+			description: 'Data Management',
 			domainIdentifier: domain.attrId,
 		});
 
@@ -241,8 +259,8 @@ export class DatazoneConstruct extends Construct {
 		});
 
 		const envProfileDataLake = new CfnEnvironmentProfile(this, 'DatazoneEnvironmentProfileDataLake', {
-			name: 'Data Fabric DataLake Environment Profile',
-			description: 'Data Fabric DataLake Environment Profile',
+			name: 'Data Management DataLake Environment Profile',
+			description: 'Data Management DataLake Environment Profile',
 			domainIdentifier: domain.attrId,
 			projectIdentifier: project.attrId,
 			awsAccountId: accountId,
@@ -253,8 +271,8 @@ export class DatazoneConstruct extends Construct {
 		envProfileDataLake.addDependency(envBlueprintDataLake);
 
 		const envProfileRedshift = new CfnEnvironmentProfile(this, 'DatazoneEnvironmentProfileRedshift', {
-			name: 'Data Fabric Redshift Environment Profile',
-			description: 'Data Fabric Redshift Environment Profile',
+			name: 'Data Management Redshift Environment Profile',
+			description: 'Data Management Redshift Environment Profile',
 			domainIdentifier: domain.attrId,
 			projectIdentifier: project.attrId,
 			awsAccountId: accountId,
@@ -265,8 +283,8 @@ export class DatazoneConstruct extends Construct {
 		envProfileRedshift.addDependency(envBlueprintRedshift);
 
 		const envDataLake = new CfnEnvironment(this, 'DatazoneEnvironmentDataLake', {
-			name: 'Data Fabric dataLake Environment',
-			description: 'Data Fabric dataLake Environment',
+			name: 'Data Management dataLake Environment',
+			description: 'Data Management dataLake Environment',
 			domainIdentifier: domain.attrId,
 			projectIdentifier: project.attrId,
 			environmentAccountIdentifier: accountId,
@@ -286,8 +304,8 @@ export class DatazoneConstruct extends Construct {
 
 		if (props?.deployRedshift) {
 			const envDataRedshift = new CfnEnvironment(this, 'DatazoneEnvironmentRedshift', {
-				name: 'Data Fabric Redshift Environment',
-				description: 'Data Fabric Redshift Environment',
+				name: 'Data Management Redshift Environment',
+				description: 'Data Management Redshift Environment',
 				domainIdentifier: domain.attrId,
 				projectIdentifier: project.attrId,
 				environmentAccountIdentifier: accountId,
@@ -298,18 +316,22 @@ export class DatazoneConstruct extends Construct {
 		}
 
 		if (props?.userIdentifier) {
-			const userProfile = new CfnUserProfile(this, 'DatazoneUserProfile', {
-				domainIdentifier: domain.attrId,
-				// status?,
-				userIdentifier: props.userIdentifier,
-				userType: 'SSO_USER',
-			});
-
-			const projectMembership = new CfnProjectMembership(this, 'DatazoneProjectMembership', {
+			new CfnProjectMembership(this, 'DatazoneProjectMembershipUser', {
 				designation: 'PROJECT_OWNER',
 				domainIdentifier: domain.attrId,
 				member: {
-					userIdentifier: userProfile.userIdentifier,
+					userIdentifier: props.userIdentifier,
+				},
+				projectIdentifier: project.attrId,
+			});
+		}
+
+		if (props?.dataZoneAdminRoleArn) {
+			new CfnProjectMembership(this, 'DatazoneProjectMembershipRole', {
+				designation: 'PROJECT_OWNER',
+				domainIdentifier: domain.attrId,
+				member: {
+					userIdentifier: props.dataZoneAdminRoleArn,
 				},
 				projectIdentifier: project.attrId,
 			});
@@ -320,7 +342,10 @@ export class DatazoneConstruct extends Construct {
 			[
 				{
 					id: 'AwsSolutions-IAM4',
-					appliesTo: ['Policy::arn:aws:iam::aws:policy/service-role/AmazonDataZoneDomainExecutionRolePolicy'],
+					appliesTo: [
+						'Policy::arn:aws:iam::aws:policy/service-role/AmazonDataZoneDomainExecutionRolePolicy',
+						'Policy::arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole',
+					],
 					reason: 'Service level policy.',
 				},
 				{
@@ -358,7 +383,7 @@ export class DatazoneConstruct extends Construct {
 			[
 				{
 					id: 'AwsSolutions-IAM4',
-					appliesTo: ['Policy::arn:aws:iam::aws:policy/service-role/AmazonDataZoneGlueManageAccessRolePolicy'],
+					appliesTo: ['Policy::arn:aws:iam::aws:policy/service-role/AmazonDataZoneGlueManageAccessRolePolicy', 'Policy::arn:aws:iam::aws:policy/AmazonS3FullAccess'],
 					reason: 'Service level policy.',
 				},
 				{

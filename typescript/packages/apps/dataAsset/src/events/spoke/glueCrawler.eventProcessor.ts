@@ -1,5 +1,5 @@
-import type { CrawlerStateChangeEvent } from '@df/events';
-import { validateNotEmpty } from '@df/validators';
+import type { CrawlerStateChangeEvent } from '@dm/events';
+import { validateNotEmpty } from '@dm/validators';
 import type { BaseLogger } from 'pino';
 import { GetTagsCommand, GlueClient, ListCrawlsCommand } from '@aws-sdk/client-glue';
 import { SendTaskSuccessCommand, type SFNClient } from '@aws-sdk/client-sfn';

@@ -4,7 +4,7 @@ import type { Construct } from 'constructs';
 import { S3Spoke, bucketArnParameter, bucketNameParameter } from './s3.construct.js';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import type { OrganizationUnitPath } from '@df/cdk-common';
+import type { OrganizationUnitPath } from '@dm/cdk-common';
 import { NagSuppressions } from 'cdk-nag';
 import { GlueSpoke } from './glue.construct.js';
 import { IAMConstruct } from './iam.construct.js';
@@ -15,11 +15,11 @@ export type SharedSpokeStackProperties = StackProps & {
 	orgPath: OrganizationUnitPath;
 };
 
-export const JobBucketAccessPolicyNameParameter = `/df/spoke/shared/databrew/jobBucketPolicyName`;
-export const GlueDatabaseNameParameter = `/df/spoke/shared/glue/databaseName`;
-export const GlueDatabaseArnParameter = `/df/spoke/shared/glue/databaseArn`;
-export const glueRoleArnParameter = `/df/spoke/shared/glueRoleArn`;
-export const glueRoleNameParameter = `/df/spoke/shared/glueRoleName`;
+export const JobBucketAccessPolicyNameParameter = `/dm/spoke/shared/databrew/jobBucketPolicyName`;
+export const GlueDatabaseNameParameter = `/dm/spoke/shared/glue/databaseName`;
+export const GlueDatabaseArnParameter = `/dm/spoke/shared/glue/databaseArn`;
+export const glueRoleArnParameter = `/dm/spoke/shared/glueRoleArn`;
+export const glueRoleNameParameter = `/dm/spoke/shared/glueRoleName`;
 
 export class SharedSpokeInfrastructureStack extends Stack {
 	constructor(scope: Construct, id: string, props: SharedSpokeStackProperties) {
@@ -34,19 +34,19 @@ export class SharedSpokeInfrastructureStack extends Stack {
 
 		new ssm.StringParameter(this, 'bucketNameParameter', {
 			parameterName: bucketNameParameter,
-			description: 'shared Bucket Name for DF Spoke',
+			description: 'shared Bucket Name for DM Spoke',
 			stringValue: s3.bucketName,
 		});
 
 		new ssm.StringParameter(this, 'bucketArnParameter', {
 			parameterName: bucketArnParameter,
-			description: 'shared Bucket Arn for DF',
+			description: 'shared Bucket Arn for DM',
 			stringValue: s3.bucketArn,
 		});
 
-		// DF Job bucket access policy, this policy can be used by end users to grant access to databrew to put the result in our bucket
+		// DM Job bucket access policy, this policy can be used by end users to grant access to databrew to put the result in our bucket
 		const jobBucketAccessPolicy = new ManagedPolicy(this, 'JobBucketAccessPolicy', {
-			managedPolicyName: `df-spoke-${region}-databrew-access-policy`,
+			managedPolicyName: `dm-spoke-${region}-databrew-access-policy`,
 			statements: [
 				new PolicyStatement({
 					sid: `databrewJobBucketAccess`,
@@ -113,7 +113,7 @@ export class SharedSpokeInfrastructureStack extends Stack {
 			[
 				{
 					id: 'AwsSolutions-IAM5',
-					appliesTo: ['Resource::<S3dfBucket5A13E120.Arn>/*', `Resource::arn:aws:logs:${region}:${accountId}:log-group:/aws-glue/*`],
+					appliesTo: ['Resource::<S3dmBucketDB985A54.Arn>/*', `Resource::arn:aws:logs:${region}:${accountId}:log-group:/aws-glue/*`],
 					reason: 'This policy is required for the policy that will grant glue access to publish job results.',
 				},
 			],

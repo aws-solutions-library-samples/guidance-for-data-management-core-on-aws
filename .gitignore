@@ -116,7 +116,7 @@ cdk-outputs.json
 
 **/*.svg.bkp
 env.list
-df_core.postman_environment.json
+dm_core.postman_environment.json
 
 *.dtmp
 *.bkp
@@ -183,3 +183,4 @@ model.tar.gz
 /python/apps/caml/model/
 predeploy.json
 ?
+package-lock.json

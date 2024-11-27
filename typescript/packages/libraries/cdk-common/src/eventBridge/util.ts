@@ -1,4 +1,4 @@
-export const dfEventBusName = `DF-Shared-Bus`;
-export const dfEventBusArn = (accountId: string, region: string) => `arn:aws:events:${region}:${accountId}:event-bus/${dfEventBusName}`;
-export const dfSpokeEventBusName = `DF-Spoke-Shared-Bus`;
-export const dfSpokeEventBusArn = (accountId: string, region: string) => `arn:aws:events:${region}:${accountId}:event-bus/${dfSpokeEventBusName}`;
+export const dmEventBusName = `dm-Shared-Bus`;
+export const dmEventBusArn = (accountId: string, region: string) => `arn:aws:events:${region}:${accountId}:event-bus/${dmEventBusName}`;
+export const dmSpokeEventBusName = `dm-Spoke-Shared-Bus`;
+export const dmSpokeEventBusArn = (accountId: string, region: string) => `arn:aws:events:${region}:${accountId}:event-bus/${dmSpokeEventBusName}`;

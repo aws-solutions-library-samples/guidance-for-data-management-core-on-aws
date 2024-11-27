@@ -7,12 +7,12 @@ import {
     DATA_ASSET_HUB_EVENT_SOURCE,
     DATA_LINEAGE_DIRECT_HUB_INGESTION_REQUEST_EVENT,
     DATA_LINEAGE_HUB_EVENT_SOURCE,
-    DataFabricInput,
+    DataManagementInput,
     EventBridgeEventBuilder,
     EventPublisher,
     OpenLineageBuilder,
     RunEvent
-} from '@df/events';
+} from '@dm/events';
 import { getConnectionType } from "../../../../common/utils.js";
 import { type DataZoneClient, GetListingCommand } from '@aws-sdk/client-datazone';
 import type { DataZoneInput, OpenLineageInput } from '../../../../api/dataAssetTask/schemas.js';
@@ -75,13 +75,13 @@ export class StartTask {
     }
 
 
-    private async assembleExternalInputs(inputs: DataZoneInput[] | OpenLineageInput[], dzClient: DataZoneClient): Promise<DataFabricInput[]> {
+    private async assembleExternalInputs(inputs: DataZoneInput[] | OpenLineageInput[], dzClient: DataZoneClient): Promise<DataManagementInput[]> {
         this.log.info(`StartTask > assembleExternalInputs > in > inputs: ${JSON.stringify(inputs)}`);
 
-        const externalInputs: DataFabricInput[] = []
+        const externalInputs: DataManagementInput[] = []
         if (inputs && inputs.length > 0) {
             if (inputs[0].hasOwnProperty('assetName') && inputs[0].hasOwnProperty('assetNamespace')) {
-                return inputs.map(o => ({type: 'DataFabric', ...o}))
+                return inputs.map(o => ({type: 'DataManagement', ...o}))
             } else {
                 const getListingFutures = inputs.map(o => {
                     return dzClient.send(new GetListingCommand({domainIdentifier: o.domainId, identifier: o.assetListingId, listingRevision: o.revision}))
@@ -92,12 +92,12 @@ export class StartTask {
                 results.forEach(r => {
                     if (r.item?.assetListing?.forms) {
                         const form = JSON.parse(r.item?.assetListing?.forms);
-                        // The lineage asset name and namespace is stored inside df_profile_form
-                        if (form['df_profile_form']['lineage_asset_name'] && form['df_profile_form']['lineage_asset_namespace']) {
+                        // The lineage asset name and namespace is stored inside dm_profile_form
+                        if (form['dm_profile_form']['lineage_asset_name'] && form['dm_profile_form']['lineage_asset_namespace']) {
                             externalInputs.push({
-                                type: 'DataFabric',
-                                assetName: form['df_profile_form']['lineage_asset_name'],
-                                assetNamespace: form['df_profile_form']['lineage_asset_namespace']
+                                type: 'DataManagement',
+                                assetName: form['dm_profile_form']['lineage_asset_name'],
+                                assetNamespace: form['dm_profile_form']['lineage_asset_namespace']
                             })
                         }
                     }
@@ -109,7 +109,7 @@ export class StartTask {
     }
 
 
-    private constructLineage(dataAssetTask: DataAssetTask, externalInputs: DataFabricInput[]): Partial<RunEvent> {
+    private constructLineage(dataAssetTask: DataAssetTask, externalInputs: DataManagementInput[]): Partial<RunEvent> {
         this.log.info(`StartTask > constructLineage > in > dataAssetTask: ${JSON.stringify(dataAssetTask)}, externalInputs: ${JSON.stringify(externalInputs)}`);
 
         const asset = dataAssetTask.dataAsset;

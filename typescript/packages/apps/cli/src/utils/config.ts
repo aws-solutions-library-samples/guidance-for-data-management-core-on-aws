@@ -14,7 +14,7 @@
 import Conf from 'conf';
 
 const config = new Conf({
-	projectName: 'data-fabric',
+	projectName: 'data-management',
 	schema: {
 		path: {
 			type: 'string',

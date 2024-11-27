@@ -16,7 +16,7 @@ import { NagSuppressions } from 'cdk-nag';
 import { clusterNameParameter } from '../shared/compute.construct.js';
 import { userPoolDomainParameter } from '../shared/cognito.construct.js';
 import { OpenLineage } from './openLineage.construct.js';
-import { userPoolIdParameter, OrganizationUnitPath } from '@df/cdk-common';
+import { userPoolIdParameter, OrganizationUnitPath } from '@dm/cdk-common';
 import { DataLineage } from './dataLineage.construct.js';
 
 export type DataLineageStackProperties = StackProps & {
@@ -29,10 +29,10 @@ export type DataLineageStackProperties = StackProps & {
 	orgPath: OrganizationUnitPath;
 };
 
-export const rdsClusterWriterEndpoint = `/df/dataLineage/aurora/rdsClusterWriterEndpoint`;
-export const rdsClusterId = `/df/dataLineage/aurora/rdsClusterId`;
-export const openLineageWebUrlParameter = `/df/dataLineage/openLineageWebUrl`;
-export const openLineageApiUrlParameter = `/df/dataLineage/openLineageApiUrl`;
+export const rdsClusterWriterEndpoint = `/dm/dataLineage/aurora/rdsClusterWriterEndpoint`;
+export const rdsClusterId = `/dm/dataLineage/aurora/rdsClusterId`;
+export const openLineageWebUrlParameter = `/dm/dataLineage/openLineageWebUrl`;
+export const openLineageApiUrlParameter = `/dm/dataLineage/openLineageApiUrl`;
 
 export class DataLineageStack extends Stack {
 	constructor(scope: Construct, id: string, props: DataLineageStackProperties) {

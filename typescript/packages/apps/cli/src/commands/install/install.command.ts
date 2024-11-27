@@ -15,11 +15,18 @@ import { Listr } from 'listr2';
 import ora from 'ora';
 import type { Answers } from '../answers.ts';
 import { preDeployPromptHandlerChain, deployPromptHandlerChain, postDeploymentPromptHandlerChain } from './prompt-chain/handler.chain.ts';
-import { preDeployTasksHandlerChain, deployTasksHandlerChain, PostDeployTasksHandlerChain } from './tasks-chain/handler.chain.ts';
+import {
+	preDeployTasksHandlerChain,
+	deployTasksHandlerChain,
+	PostDeployTasksHandlerChain,
+	UserCreationTasksHandlerChain,
+	AddProjectMemberTasksHandlerChain,
+} from './tasks-chain/handler.chain.ts';
+import { getAnswers } from '../../utils/answers.ts';
 
 const command = 'install';
 
-const describe = 'Installs Data Fabric for evaluation within a single AWS Account.';
+const describe = 'Installs Data Management for evaluation within a single AWS Account.';
 
 const handler = async () => {
 	const spinner = ora({ discardStdin: false });
@@ -64,6 +71,16 @@ const handler = async () => {
 
 	const postDeployPromptChain = postDeploymentPromptHandlerChain();
 	answers = await postDeployPromptChain.handle(answers, spinner);
+
+	const userCreationTask = new Listr<Answers>([]);
+	await UserCreationTasksHandlerChain().handle(userCreationTask);
+	await userCreationTask.run(answers);
+
+	answers = await getAnswers();
+
+	const projectMembershipTask = new Listr<Answers>([]);
+	await AddProjectMemberTasksHandlerChain().handle(projectMembershipTask);
+	await projectMembershipTask.run(answers);
 
 	const postDeploymentTask = new Listr<Answers>([]);
 	await PostDeployTasksHandlerChain().handle(postDeploymentTask);

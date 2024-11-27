@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 import * as cr from 'aws-cdk-lib/custom-resources';
 import * as cdk from 'aws-cdk-lib';
 import { NagSuppressions } from 'cdk-nag';
-import { getLambdaArchitecture } from '@df/cdk-common';
+import { getLambdaArchitecture } from '@dm/cdk-common';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,9 +21,9 @@ export interface CognitoIdpCreatorConstructProperties {
 	callbackUrls: string;
 }
 
-export const idpNameParameter = `/df/shared/ssoApplicationNameParameter`;
-export const ssoApplicationMetadataUrlParameter = `/df/shared/MetadataUrlParameter`;
-export const CognitoClientIdParameter = `/df/shared/cognito/clientId`;
+export const idpNameParameter = `/dm/shared/ssoApplicationNameParameter`;
+export const ssoApplicationMetadataUrlParameter = `/dm/shared/MetadataUrlParameter`;
+export const CognitoClientIdParameter = `/dm/shared/cognito/clientId`;
 
 export class CognitoIdpCreator extends Construct {
 	private accountId = cdk.Stack.of(this).account;
@@ -32,7 +32,7 @@ export class CognitoIdpCreator extends Construct {
 	constructor(scope: Construct, id: string, props: CognitoIdpCreatorConstructProperties) {
 		super(scope, id);
 
-		const namePrefix = `df`;
+		const namePrefix = `dm`;
 
 		new ssm.StringParameter(this, 'ssoApplicationMetadataUrlParameter', {
 			parameterName: ssoApplicationMetadataUrlParameter,

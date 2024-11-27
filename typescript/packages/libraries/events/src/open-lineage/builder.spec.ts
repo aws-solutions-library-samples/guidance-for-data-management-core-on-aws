@@ -14,23 +14,23 @@ describe('OpenLineageBuilder', () => {
         )
     })
 
-    describe('Derived data asset with custom transformation applied outside DF', () => {
+    describe('Derived data asset with custom transformation applied outside DM', () => {
         const expectedStartEvent: Partial<RunEvent> = {
             "producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
             "schemaURL": "https://openlineage.io/spec/1-0-5/OpenLineage.json#/definitions/RunEvent",
             "job": {
-                "namespace": "sample_domain - df.12345",
-                "name": "df_create_dataset - SampleCsvAsset",
+                "namespace": "sample_domain - dm.12345",
+                "name": "dm_create_dataset - SampleCsvAsset",
                 "facets": {
                     "documentation": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://github.com/OpenLineage/OpenLineage/blob/main/spec/facets/DocumentationJobFacet.json",
-                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - df.12345"
+                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - dm.12345"
                     },
                     "ownership": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/OwnershipJobFacet.json",
-                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:df.DataAssetModule"}]
+                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:dm.DataAssetModule"}]
                     },
                     "sourceCodeLocation": {
                         "_producer": "external_bash_script",
@@ -49,7 +49,7 @@ describe('OpenLineageBuilder', () => {
             "eventTime": "2024-03-08T04:46:23.275Z",
             "eventType": "START",
             "run": {
-                "runId": "8948df56-2116-401f-9349-95c42b646047",
+                "runId": "8948dm56-2116-401f-9349-95c42b646047",
                 "facets": {
                     "nominalTime": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -64,18 +64,18 @@ describe('OpenLineageBuilder', () => {
             "producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
             "schemaURL": "https://openlineage.io/spec/1-0-5/OpenLineage.json#/definitions/RunEvent",
             "job": {
-                "namespace": "sample_domain - df.12345",
-                "name": "df_create_dataset - SampleCsvAsset",
+                "namespace": "sample_domain - dm.12345",
+                "name": "dm_create_dataset - SampleCsvAsset",
                 "facets": {
                     "documentation": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://github.com/OpenLineage/OpenLineage/blob/main/spec/facets/DocumentationJobFacet.json",
-                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - df.12345"
+                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - dm.12345"
                     },
                     "ownership": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/OwnershipJobFacet.json",
-                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:df.DataAssetModule"}]
+                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:dm.DataAssetModule"}]
                     },
                     "sourceCodeLocation": {"_producer": "external_bash_script", "_schemaURL": "https://github.com/OpenLineage/OpenLineage/blob/main/spec/facets/SourceCodeLocationJobFacet.json", "type": "git", "url": "some_git_url"}
                 }
@@ -87,7 +87,7 @@ describe('OpenLineageBuilder', () => {
                 "inputFacets": {}
             }],
             "outputs": [{
-                "namespace": "sample_domain - df.12345", "name": "df.stationary-combustion.77777",
+                "namespace": "sample_domain - dm.12345", "name": "dm.stationary-combustion.77777",
                 "outputFacets": {},
                 "facets": {
                     "lifecycleStateChange": {
@@ -98,7 +98,7 @@ describe('OpenLineageBuilder', () => {
                     "ownership": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/OwnershipDatasetFacet.json",
-                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:df.DataAssetModule"}]
+                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:dm.DataAssetModule"}]
                     },
                     "storage": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -111,8 +111,8 @@ describe('OpenLineageBuilder', () => {
                         "_producer": "externalProducer",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-1/ColumnLineageDatasetFacet.json",
                         "fields": {
-                            "category": {"inputFields": [{"namespace": "external_domain - df.00000", "name": "usepa.ghg-emission-factors-hub-2023", "field": "Fuel Category"}]},
-                            "fuelType": {"inputFields": [{"namespace": "external_domain - df.00000", "name": "usepa.ghg-emission-factors-hub-2023", "field": "Fuel Type"}]}
+                            "category": {"inputFields": [{"namespace": "external_domain - dm.00000", "name": "usepa.ghg-emission-factors-hub-2023", "field": "Fuel Category"}]},
+                            "fuelType": {"inputFields": [{"namespace": "external_domain - dm.00000", "name": "usepa.ghg-emission-factors-hub-2023", "field": "Fuel Type"}]}
                         }
                     }
                 }
@@ -120,7 +120,7 @@ describe('OpenLineageBuilder', () => {
             "eventTime": "2024-03-08T04:46:23.275Z",
             "eventType": "COMPLETE",
             "run": {
-                "runId": "8948df56-2116-401f-9349-95c42b646047",
+                "runId": "8948dm56-2116-401f-9349-95c42b646047",
                 "facets": {
                     "nominalTime": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -137,10 +137,10 @@ describe('OpenLineageBuilder', () => {
                 .setJob(
                     {
                         // Supplied by StateMachine task
-                        jobName: "df_create_dataset",
+                        jobName: "dm_create_dataset",
                         // Supplied by user
                         assetName: "SampleCsvAsset",
-                        // TODO: JR & PB - Provided by user when transformation is carried outside of DF
+                        // TODO: JR & PB - Provided by user when transformation is carried outside of DM
                         sourceCodeLocation: {
                             _producer: 'external_bash_script',
                             type: 'git',
@@ -150,15 +150,15 @@ describe('OpenLineageBuilder', () => {
                     })
                 .setStartJob(
                     {
-                        executionId: "8948df56-2116-401f-9349-95c42b646047",
+                        executionId: "8948dm56-2116-401f-9349-95c42b646047",
                         startTime: "2024-03-08T04:46:23.275Z"
                     })
 
                 .setDatasetInput({
-                    // TODO: JR & PB - Provided by user when the specify input from Data Fabric
+                    // TODO: JR & PB - Provided by user when the specify input from Data Management
                     assetName: "sampleAssetName",
                     assetNamespace: "asset.namespace.other",
-                    type: 'DataFabric',
+                    type: 'DataManagement',
                 }).build();
 
             expect(actualStartEvent).toEqual(expectedStartEvent);
@@ -177,17 +177,17 @@ describe('OpenLineageBuilder', () => {
                         fileFormat: "csv",
                         storageLayer: "s3",
                     },
-                    name: "df.stationary-combustion.77777",
+                    name: "dm.stationary-combustion.77777",
                     version: "1.2",
                     usernames: ['testuser@admin.com'],
-                    // TODO: JR & PB - Column Lineage information provided by user when transformation is performed outside of DF.
+                    // TODO: JR & PB - Column Lineage information provided by user when transformation is performed outside of DM.
                     customTransformerMetadata: {
                         _producer: 'externalProducer',
                         fields: {
                             "category": {
                                 "inputFields": [
                                     {
-                                        "namespace": "external_domain - df.00000",
+                                        "namespace": "external_domain - dm.00000",
                                         "name": "usepa.ghg-emission-factors-hub-2023",
                                         "field": "Fuel Category"
                                     }
@@ -196,7 +196,7 @@ describe('OpenLineageBuilder', () => {
                             "fuelType": {
                                 "inputFields": [
                                     {
-                                        "namespace": "external_domain - df.00000",
+                                        "namespace": "external_domain - dm.00000",
                                         "name": "usepa.ghg-emission-factors-hub-2023",
                                         "field": "Fuel Type"
                                     }
@@ -216,18 +216,18 @@ describe('OpenLineageBuilder', () => {
             "producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
             "schemaURL": "https://openlineage.io/spec/1-0-5/OpenLineage.json#/definitions/RunEvent",
             "job": {
-                "namespace": "sample_domain - df.12345",
-                "name": "df_data_quality_metrics - SampleCsvAsset",
+                "namespace": "sample_domain - dm.12345",
+                "name": "dm_data_quality_metrics - SampleCsvAsset",
                 "facets": {
                     "documentation": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://github.com/OpenLineage/OpenLineage/blob/main/spec/facets/DocumentationJobFacet.json",
-                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - df.12345"
+                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - dm.12345"
                     },
                     "ownership": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/OwnershipJobFacet.json",
-                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:df.DataAssetModule"}]
+                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:dm.DataAssetModule"}]
                     }
                 }
             },
@@ -236,7 +236,7 @@ describe('OpenLineageBuilder', () => {
                 "namespace": "asset.namespace.other",
                 "inputFacets": {
                     "dataQualityMetrics": {
-                        "_producer": "8948df56-2116-401f-9349-95c42b646047",
+                        "_producer": "8948dm56-2116-401f-9349-95c42b646047",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/DataQualityMetricsInputDatasetFacet.json",
                         "rowCount": 20000,
                         "columnMetrics": {
@@ -251,7 +251,7 @@ describe('OpenLineageBuilder', () => {
             "eventTime": "2024-03-08T04:46:23.275Z",
             "eventType": "COMPLETE",
             "run": {
-                "runId": "8948df56-2116-401f-9349-95c42b646047",
+                "runId": "8948dm56-2116-401f-9349-95c42b646047",
                 "facets": {
                     "nominalTime": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -262,7 +262,7 @@ describe('OpenLineageBuilder', () => {
                     "parent": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/ParentRunFacet.json",
-                        "job": {"name": "df_create_dataset - SampleCsvAsset", "namespace": "sample_domain - df.12345"},
+                        "job": {"name": "dm_create_dataset - SampleCsvAsset", "namespace": "sample_domain - dm.12345"},
                         "run": {"runId": "284ae082-8385-4de5-9ec6-87d6ed65b113"}
                     }
                 }
@@ -273,13 +273,13 @@ describe('OpenLineageBuilder', () => {
             "producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
             "schemaURL": "https://openlineage.io/spec/1-0-5/OpenLineage.json#/definitions/RunEvent",
             "job": {
-                "namespace": "sample_domain - df.12345",
-                "name": "df_data_quality_metrics - SampleCsvAsset",
+                "namespace": "sample_domain - dm.12345",
+                "name": "dm_data_quality_metrics - SampleCsvAsset",
                 "facets": {
                     "documentation": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://github.com/OpenLineage/OpenLineage/blob/main/spec/facets/DocumentationJobFacet.json",
-                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - df.12345"
+                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - dm.12345"
                     },
                     "ownership": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -289,7 +289,7 @@ describe('OpenLineageBuilder', () => {
                                 "name": "user:testuser@admin.com"
                             },
                             {
-                                "name": "application:df.DataAssetModule"
+                                "name": "application:dm.DataAssetModule"
                             }
                         ]
                     }
@@ -307,7 +307,7 @@ describe('OpenLineageBuilder', () => {
             "eventTime": "2024-03-08T04:46:23.275Z",
             "eventType": "START",
             "run": {
-                "runId": "8948df56-2116-401f-9349-95c42b646047",
+                "runId": "8948dm56-2116-401f-9349-95c42b646047",
                 "facets": {
                     "nominalTime": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -318,8 +318,8 @@ describe('OpenLineageBuilder', () => {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/ParentRunFacet.json",
                         "job": {
-                            "name": "df_create_dataset - SampleCsvAsset",
-                            "namespace": "sample_domain - df.12345"
+                            "name": "dm_create_dataset - SampleCsvAsset",
+                            "namespace": "sample_domain - dm.12345"
                         },
                         "run": {
                             "runId": "284ae082-8385-4de5-9ec6-87d6ed65b113"
@@ -366,7 +366,7 @@ describe('OpenLineageBuilder', () => {
                 .setJob(
                     {
                         // Provided by StateMachine task.
-                        jobName: "df_data_quality_metrics",
+                        jobName: "dm_data_quality_metrics",
                         // Provided by user.
                         assetName: "SampleCsvAsset",
                         usernames: ['testuser@admin.com']
@@ -374,21 +374,21 @@ describe('OpenLineageBuilder', () => {
                 .setStartJob(
                     {
                         // This will be the Glue DataBrew Profiling Run Id
-                        executionId: "8948df56-2116-401f-9349-95c42b646047",
+                        executionId: "8948dm56-2116-401f-9349-95c42b646047",
                         startTime: "2024-03-08T04:46:23.275Z",
                         parent: {
                             // TODO: WS - Need to create lineage between StepFunction in Hub and Spoke account
                             // This will be the StateMachine execution id in the spoke account.
                             runId: '284ae082-8385-4de5-9ec6-87d6ed65b113',
                             producer: 'parent_step_machine',
-                            name: "df_create_dataset",
+                            name: "dm_create_dataset",
                             assetName: "SampleCsvAsset"
                         }
                     })
                 .setDatasetInput({
                     assetName: "sampleAssetName",
                     assetNamespace: "asset.namespace.other",
-                    type: 'DataFabric',
+                    type: 'DataManagement',
                 }).build();
 
             expect(actualStartEvent).toEqual(expectedStartEvent);
@@ -414,13 +414,13 @@ describe('OpenLineageBuilder', () => {
             "producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
             "schemaURL": "https://openlineage.io/spec/1-0-5/OpenLineage.json#/definitions/RunEvent",
             "job": {
-                "namespace": "sample_domain - df.12345",
-                "name": "df_data_quality_assertions - SampleCsvAsset",
+                "namespace": "sample_domain - dm.12345",
+                "name": "dm_data_quality_assertions - SampleCsvAsset",
                 "facets": {
                     "documentation": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://github.com/OpenLineage/OpenLineage/blob/main/spec/facets/DocumentationJobFacet.json",
-                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - df.12345"
+                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - dm.12345"
                     },
                     "ownership": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -430,7 +430,7 @@ describe('OpenLineageBuilder', () => {
                                 "name": "user:testuser@admin.com"
                             },
                             {
-                                "name": "application:df.DataAssetModule"
+                                "name": "application:dm.DataAssetModule"
                             }
                         ]
                     }
@@ -448,7 +448,7 @@ describe('OpenLineageBuilder', () => {
             "eventTime": "2024-03-08T04:46:23.275Z",
             "eventType": "START",
             "run": {
-                "runId": "8948df56-2116-401f-9349-95c42b646047",
+                "runId": "8948dm56-2116-401f-9349-95c42b646047",
                 "facets": {
                     "nominalTime": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -459,8 +459,8 @@ describe('OpenLineageBuilder', () => {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/ParentRunFacet.json",
                         "job": {
-                            "name": "df_create_dataset - SampleCsvAsset",
-                            "namespace": "sample_domain - df.12345"
+                            "name": "dm_create_dataset - SampleCsvAsset",
+                            "namespace": "sample_domain - dm.12345"
                         },
                         "run": {
                             "runId": "284ae082-8385-4de5-9ec6-87d6ed65b113"
@@ -509,18 +509,18 @@ describe('OpenLineageBuilder', () => {
             "producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
             "schemaURL": "https://openlineage.io/spec/1-0-5/OpenLineage.json#/definitions/RunEvent",
             "job": {
-                "namespace": "sample_domain - df.12345",
-                "name": "df_data_quality_assertions - SampleCsvAsset",
+                "namespace": "sample_domain - dm.12345",
+                "name": "dm_data_quality_assertions - SampleCsvAsset",
                 "facets": {
                     "documentation": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://github.com/OpenLineage/OpenLineage/blob/main/spec/facets/DocumentationJobFacet.json",
-                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - df.12345"
+                        "description": "Catalogs the SampleCsvAsset within the DataZone catalog for domain sample_domain - dm.12345"
                     },
                     "ownership": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/OwnershipJobFacet.json",
-                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:df.DataAssetModule"}]
+                        "owners": [{"name": "user:testuser@admin.com"}, {"name": "application:dm.DataAssetModule"}]
                     }
                 }
             },
@@ -530,7 +530,7 @@ describe('OpenLineageBuilder', () => {
                 "inputFacets": {},
                 "facets": {
                     "dataQualityAssertions": {
-                        "_producer": "8948df56-2116-401f-9349-95c42b646047",
+                        "_producer": "8948dm56-2116-401f-9349-95c42b646047",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/DataQualityAssertionsDatasetFacet.json",
                         "assertions":
                             [
@@ -547,7 +547,7 @@ describe('OpenLineageBuilder', () => {
             "eventTime": "2024-03-08T04:46:23.275Z",
             "eventType": "COMPLETE",
             "run": {
-                "runId": "8948df56-2116-401f-9349-95c42b646047",
+                "runId": "8948dm56-2116-401f-9349-95c42b646047",
                 "facets": {
                     "nominalTime": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
@@ -558,7 +558,7 @@ describe('OpenLineageBuilder', () => {
                     "parent": {
                         "_producer": "arn:aws:states:ap-southeast-2:111111111:stateMachine:createDataSetPipeline",
                         "_schemaURL": "https://openlineage.io/spec/facets/1-0-0/ParentRunFacet.json",
-                        "job": {"name": "df_create_dataset - SampleCsvAsset", "namespace": "sample_domain - df.12345"},
+                        "job": {"name": "dm_create_dataset - SampleCsvAsset", "namespace": "sample_domain - dm.12345"},
                         "run": {"runId": "284ae082-8385-4de5-9ec6-87d6ed65b113"}
                     }
                 }
@@ -569,20 +569,20 @@ describe('OpenLineageBuilder', () => {
             const actualStartEvent = builder
                 .setJob(
                     {
-                        jobName: "df_data_quality_assertions",
+                        jobName: "dm_data_quality_assertions",
                         assetName: "SampleCsvAsset",
                         usernames: ['testuser@admin.com']
                     })
                 .setStartJob(
                     {
                         // This will be the GlueData Quality Profile execution id
-                        executionId: "8948df56-2116-401f-9349-95c42b646047",
+                        executionId: "8948dm56-2116-401f-9349-95c42b646047",
                         startTime: "2024-03-08T04:46:23.275Z",
                         parent: {
                             // TODO: WS - Need to create lineage between StepFunction in Hub and Spoke account
                             // This will be the execution id of the step function in spoke account
                             runId: '284ae082-8385-4de5-9ec6-87d6ed65b113',
-                            name: "df_create_dataset",
+                            name: "dm_create_dataset",
                             assetName: 'SampleCsvAsset',
                             producer: 'sample parent producer'
                         }
@@ -590,7 +590,7 @@ describe('OpenLineageBuilder', () => {
                 .setDatasetInput({
                     assetName: "sampleAssetName",
                     assetNamespace: "asset.namespace.other",
-                    type: 'DataFabric',
+                    type: 'DataManagement',
                 }).build();
 
             expect(actualStartEvent).toEqual(expectedStartEvent);

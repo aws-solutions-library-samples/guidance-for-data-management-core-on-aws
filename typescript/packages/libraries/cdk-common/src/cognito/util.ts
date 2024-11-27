@@ -1,1 +1,1 @@
-export const userPoolIdParameter = `/df/shared/cognito/userPoolId`;
+export const userPoolIdParameter = `/dm/shared/cognito/userPoolId`;

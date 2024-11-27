@@ -12,7 +12,7 @@ export class IAMConstruct extends Construct {
 		super(scope, id);
 
 		/*
-		 * Create the role that will be provided to DF when creating assets. DF will pass this role to Glue and Glue DataBrew as needed.
+		 * Create the role that will be provided to DM when creating assets. DM will pass this role to Glue and Glue DataBrew as needed.
 		 * */
 
 		const glueRole = new Role(this, 'GlueRole', {

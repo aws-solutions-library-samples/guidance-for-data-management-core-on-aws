@@ -4,14 +4,14 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 export interface SSMConstructProperties {
 }
 // Access Control Parameters
-export const accessControlApiFunctionNameParameter = `/df/accessControl/apiFunctionName`;
+export const accessControlApiFunctionNameParameter = `/dm/accessControl/apiFunctionName`;
 // Data Lineage Parameters
-export const dataLineageApiFunctionNameParameter = `/df/dataLineage/apiFunctionName`;
+export const dataLineageApiFunctionNameParameter = `/dm/dataLineage/apiFunctionName`;
 
 
 
 // Data Quality Parameters
-export const dataQualityApiFunctionNameParameter = `/df/dataQuality/apiFunctionName`;
+export const dataQualityApiFunctionNameParameter = `/dm/dataQuality/apiFunctionName`;
 
 
 export class SSM extends Construct {
@@ -19,7 +19,7 @@ export class SSM extends Construct {
 	constructor(scope: Construct, id: string) {
 		super(scope, id);
 
-		const namePrefix = `df`;
+		const namePrefix = `dm`;
 
 		new StringParameter(this, 'accessControlApiFunctionNameParameter', {
 			parameterName: accessControlApiFunctionNameParameter,

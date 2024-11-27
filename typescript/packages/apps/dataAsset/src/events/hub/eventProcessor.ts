@@ -1,5 +1,5 @@
-import type { CreateResponseEvent } from '@df/events';
-import { validateNotEmpty } from '@df/validators';
+import type { CreateResponseEvent } from '@dm/events';
+import { validateNotEmpty } from '@dm/validators';
 import type { BaseLogger } from 'pino';
 import { SendTaskSuccessCommand, type SFNClient, SendTaskFailureCommand } from '@aws-sdk/client-sfn';
 import type { DataAssetTask } from '../../stepFunction/tasks/models.js';

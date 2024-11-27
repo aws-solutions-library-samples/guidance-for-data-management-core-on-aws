@@ -16,7 +16,7 @@ export class RecipeJobTask {
 
         const id = event.dataAsset?.catalog?.assetId ? event.dataAsset.catalog.assetId : event.dataAsset.id;
 
-        let recipeName = `df-${id}`;
+        let recipeName = `dm-${id}`;
         let recipeVersion = '1.0'; // default published version is 1.0 (string)
 
         // if the request specifies an existing recipe, use that, otherwise, create a new recipe

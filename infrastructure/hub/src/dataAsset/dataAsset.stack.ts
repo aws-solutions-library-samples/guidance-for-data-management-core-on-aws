@@ -4,7 +4,7 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { NagSuppressions } from 'cdk-nag';
 
 import { DataAsset } from "./dataAsset.construct.js";
-import { dfEventBusName, userPoolIdParameter, OrganizationUnitPath } from '@df/cdk-common';
+import { dmEventBusName, userPoolIdParameter, OrganizationUnitPath } from '@dm/cdk-common';
 import { bucketNameParameter } from '../shared/s3.construct.js';
 
 export type DataAssetStackProperties = StackProps & {
@@ -17,12 +17,12 @@ export type DataAssetStackProperties = StackProps & {
 };
 
 
-export const dataAssetApiUrlParameter = `/df/dataAsset/apiUrl`;
-export const dataAssetFunctionNameParameter = `/df/dataAsset/functionName`;
-export const dataAssetTableNameParameter = `/df/dataAsset/tableName`;
-export const dataAssetTableArnParameter = `/df/dataAsset/tableArn`;
-export const dataAssetCreateStateMachineArnParameter = `/df/dataAsset/createStateMachineArn`;
-export const dataAssetUpdateStateMachineArnParameter = `/df/dataAsset/updateStateMachineArn`;
+export const dataAssetApiUrlParameter = `/dm/dataAsset/apiUrl`;
+export const dataAssetFunctionNameParameter = `/dm/dataAsset/functionName`;
+export const dataAssetTableNameParameter = `/dm/dataAsset/tableName`;
+export const dataAssetTableArnParameter = `/dm/dataAsset/tableArn`;
+export const dataAssetCreateStateMachineArnParameter = `/dm/dataAsset/createStateMachineArn`;
+export const dataAssetUpdateStateMachineArnParameter = `/dm/dataAsset/updateStateMachineArn`;
 
 export class DataAssetStack extends Stack {
     constructor(scope: Construct, id: string, props: DataAssetStackProperties) {
@@ -33,7 +33,7 @@ export class DataAssetStack extends Stack {
 
         const dataAsset = new DataAsset(this, 'DataAssetHub', {
             moduleName: props.moduleName,
-            eventBusName: dfEventBusName,
+            eventBusName: dmEventBusName,
             cognitoUserPoolId: userPoolId,
             orgPath: props.orgPath,
             bucketName,

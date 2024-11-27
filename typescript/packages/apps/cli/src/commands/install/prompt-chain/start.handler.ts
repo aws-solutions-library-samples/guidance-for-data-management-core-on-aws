@@ -15,7 +15,7 @@ import { GetCallerIdentityCommand } from '@aws-sdk/client-sts';
 import { confirm } from '@inquirer/prompts';
 import type { Ora } from 'ora';
 import { diContainer, updateRegion } from '../../../di.ts';
-import { awsRegionSelect, bomb, enterEmail } from '../../../prompts/common.prompts.ts';
+import { awsRegionSelect, bomb, enterArn, enterEmail } from '../../../prompts/common.prompts.ts';
 import type { Answers } from '../../answers.ts';
 import { PromptHandler } from '../../../prompts/base.handler.ts';
 import { getSavedAnswers, saveAnswers } from '../../../utils/answers.ts';
@@ -38,7 +38,7 @@ export class StartPromptHandler extends PromptHandler {
 		answers.deployDemoSpoke = true;
 
 		let shouldContinue = await confirm({
-			message: 'This will deploy Data Fabric into a single AWS Account. This mode is recommended for evaluating the Data Fabric only.\n  Continue?',
+			message: 'This will deploy Data Management into a single AWS Account. This mode is recommended for evaluating the Data Management only.\n  Continue?',
 		});
 		if (!shouldContinue) {
 			bomb();
@@ -66,6 +66,24 @@ export class StartPromptHandler extends PromptHandler {
 		});
 		if (!shouldContinue) {
 			region = await awsRegionSelect();
+		}
+
+		//Get the Admin role for management of dataZone projects
+		let getAdminRole = await confirm({
+			message: `Do you want to use an admin role for ownership of DataZone projects ?`,
+		});
+
+		if (getAdminRole) {
+			let useExistingRole = false;
+			let adminRole: string | undefined = answers?.dataZoneAdminRoleArn;
+			if (adminRole) {
+				useExistingRole = await confirm({
+					message: `Confirm DataZone admin roleArn: '${adminRole}'`,
+				});
+			}
+			if (!useExistingRole) {
+				answers.dataZoneAdminRoleArn = await enterArn('Enter the DataZone admin roleArn: ');
+			}
 		}
 
 		// TODO: in future we need to separate hub , spoke & Identity center accounts

@@ -33,6 +33,7 @@ export class CdkDemoTasksHandler extends TasksHandler {
 					 * */
 					const deployment = await $`npm run cdk -- deploy \
 -c IdentityStoreAdminUserId=${ctx?.IdentityStoreAdminUserId ? ctx.IdentityStoreAdminUserId : undefined} \
+-c DataZoneAdminRoleArnStr=${ctx?.dataZoneAdminRoleArn ? ctx.dataZoneAdminRoleArn : undefined} \
 -c deployHub=${ctx?.deployDemoHub ? ctx.deployDemoHub : true} \
 -c dataZoneDomainId=${ctx?.dataZoneDomainId ? ctx.dataZoneDomainId : undefined} \
 -c dataZoneProjectId=${ctx?.dataZoneProjectId ? ctx.dataZoneProjectId : undefined} \

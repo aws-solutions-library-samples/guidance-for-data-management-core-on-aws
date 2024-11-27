@@ -1,1 +1,1 @@
-export const dataZoneExecutionRoleName = `DFDataZoneDomainExecution`;
+export const dataZoneExecutionRoleName = `DMDataZoneDomainExecution`;

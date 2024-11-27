@@ -4,20 +4,20 @@
 
 import type { DataAssetCatalog, DataAssetWorkflow } from "../common/dataAsset.models.js";
 
-export const ACCESS_CONTROL_SPOKE_EVENT_SOURCE: string = 'com.aws.df.spoke.accessControl';
-export const DATA_LINEAGE_SPOKE_EVENT_SOURCE: string = 'com.aws.df.spoke.dataLineage';
-export const DATA_ASSET_SPOKE_EVENT_SOURCE: string = 'com.aws.df.spoke.dataAsset';
+export const ACCESS_CONTROL_SPOKE_EVENT_SOURCE: string = 'com.aws.dm.spoke.accessControl';
+export const DATA_LINEAGE_SPOKE_EVENT_SOURCE: string = 'com.aws.dm.spoke.dataLineage';
+export const DATA_ASSET_SPOKE_EVENT_SOURCE: string = 'com.aws.dm.spoke.dataAsset';
 
-export const DATA_ASSET_SPOKE_JOB_START_EVENT = `DF>${DATA_ASSET_SPOKE_EVENT_SOURCE}>job>start`
-export const DATA_ASSET_SPOKE_CREATE_REQUEST_EVENT = `DF>${DATA_ASSET_SPOKE_EVENT_SOURCE}>create>request`
+export const DATA_ASSET_SPOKE_JOB_START_EVENT = `DM>${DATA_ASSET_SPOKE_EVENT_SOURCE}>job>start`
+export const DATA_ASSET_SPOKE_CREATE_REQUEST_EVENT = `DM>${DATA_ASSET_SPOKE_EVENT_SOURCE}>create>request`
 export const DATA_BREW_JOB_STATE_CHANGE: string = 'DataBrew Job State Change';
 export const GLUE_CRAWLER_STATE_CHANGE: string = 'Glue Crawler State Change';
 
 export const DATA_QUALITY_EVALUATION_RESULTS_AVAILABLE = 'Data Quality Evaluation Results Available';
 
-export const DATA_ASSET_SPOKE_JOB_COMPLETE_EVENT = `DF>${DATA_ASSET_SPOKE_EVENT_SOURCE}>job>complete`
-export const DATA_ASSET_SPOKE_CRAWLER_COMPLETE_EVENT = `DF>${DATA_ASSET_SPOKE_EVENT_SOURCE}>crawler>complete`
-export const DATA_ASSET_SPOKE_CREATE_RESPONSE_EVENT = `DF>${DATA_ASSET_SPOKE_EVENT_SOURCE}>create>response`
+export const DATA_ASSET_SPOKE_JOB_COMPLETE_EVENT = `DM>${DATA_ASSET_SPOKE_EVENT_SOURCE}>job>complete`
+export const DATA_ASSET_SPOKE_CRAWLER_COMPLETE_EVENT = `DM>${DATA_ASSET_SPOKE_EVENT_SOURCE}>crawler>complete`
+export const DATA_ASSET_SPOKE_CREATE_RESPONSE_EVENT = `DM>${DATA_ASSET_SPOKE_EVENT_SOURCE}>create>response`
 
 
 export type JobState = 'FAILED' | 'SUCCEEDED';

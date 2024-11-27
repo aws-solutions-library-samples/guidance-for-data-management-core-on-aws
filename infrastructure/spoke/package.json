@@ -1,7 +1,7 @@
 {
-	"name": "@df/infrastructure-spoke",
+	"name": "@dm/infrastructure-spoke",
 	"version": "1.0.0",
-	"description": "DF: Spoke Infrastructure.",
+	"description": "DM: Spoke Infrastructure.",
 	"type": "module",
 	"scripts": {
 		"clean:package": "npx shx rm -rf dist *.log .rush tsconfig.tsbuildinfo",
@@ -13,8 +13,8 @@
 	},
 	"dependencies": {
 		"@aws-cdk/aws-glue-alpha": "2.157.0-alpha.0",
-		"@df/cdk-common": "workspace:*",
-		"@df/events": "workspace:*",
+		"@dm/cdk-common": "workspace:*",
+		"@dm/events": "workspace:*",
 		"aws-cdk-lib": "~2",
 		"cdk-nag": "~2",
 		"constructs": "~10"

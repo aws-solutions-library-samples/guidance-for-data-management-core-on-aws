@@ -12,11 +12,11 @@ export interface DomainEvent<T> {
 	error?: Error;
 }
 
-export const ACCESS_CONTROL_HUB_EVENT_SOURCE: string = 'com.aws.df.hub.accessControl';
-export const DATA_LINEAGE_HUB_EVENT_SOURCE: string = 'com.aws.df.hub.dataLineage';
-export const DATA_ASSET_HUB_EVENT_SOURCE: string = 'com.aws.df.hub.dataAsset';
+export const ACCESS_CONTROL_HUB_EVENT_SOURCE: string = 'com.aws.dm.hub.accessControl';
+export const DATA_LINEAGE_HUB_EVENT_SOURCE: string = 'com.aws.dm.hub.dataLineage';
+export const DATA_ASSET_HUB_EVENT_SOURCE: string = 'com.aws.dm.hub.dataAsset';
 
-export const DATA_ASSET_HUB_CREATE_REQUEST_EVENT =  `DF>${DATA_ASSET_HUB_EVENT_SOURCE}>create>request`
+export const DATA_ASSET_HUB_CREATE_REQUEST_EVENT =  `DM>${DATA_ASSET_HUB_EVENT_SOURCE}>create>request`
 
 export const DATA_ZONE_EVENT_SOURCE: string = 'aws.datazone';
 export const STEP_FUNCTION_EVENT_SOURCE: string = 'aws.states';

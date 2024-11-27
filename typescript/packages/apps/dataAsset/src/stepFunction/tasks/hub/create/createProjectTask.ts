@@ -14,7 +14,7 @@ export class CreateProjectTask {
 
 	public async process(event: DataAssetTask): Promise<any> {
 		this.log.info(`CreateProjectsTask > process > in > event: ${JSON.stringify(event)}`);
-		const projectName = 'df-project';
+		const projectName = 'dm-project';
 
 		let projectId = undefined;
 
@@ -47,17 +47,17 @@ export class CreateProjectTask {
 		try {
 			await this.dataZoneClient.send(new GetFormTypeCommand({
 				domainIdentifier: event.dataAsset.catalog.domainId,
-				formTypeIdentifier: `df_profile_form`
+				formTypeIdentifier: `dm_profile_form`
 			}))
 		} catch( error) {
 			this.log.info(`CreateProjectsTask > process >error ${JSON.stringify(error)} !!!`);
 			//if for type not found then create it
 			await this.dataZoneClient.send(new CreateFormTypeCommand({
 				domainIdentifier: event.dataAsset.catalog.domainId,
-				name: 'df_profile_form',
+				name: 'dm_profile_form',
 				owningProjectIdentifier: projectId,
 				model: {
-					smithy: "@amazon.datazone#displayname(defaultName: \"DF_Profile_Form\")\n structure df_profile_form\n  {\n @amazon.datazone#displayname(defaultName: \"Asset namespace\")\nlineage_asset_namespace: String\n @documentation(\"The name of the data asset in OpenLineage\")\n@amazon.datazone#displayname(defaultName: \"Asset Name\")\nlineage_asset_name: String\n @amazon.datazone#displayname(defaultName: \"Data Quality Profile Location\")\ndata_quality_profile_location: String\n @required\n@amazon.datazone#displayname(defaultName: \"Task Id\")\n @amazon.datazone#searchable\ntask_id: String\n @amazon.datazone#displayname(defaultName: \"Data Profile Location\")\ndata_profile_location: String\n  } "
+					smithy: "@amazon.datazone#displayname(defaultName: \"DM_Profile_Form\")\n structure dm_profile_form\n  {\n @amazon.datazone#displayname(defaultName: \"Asset namespace\")\nlineage_asset_namespace: String\n @documentation(\"The name of the data asset in OpenLineage\")\n@amazon.datazone#displayname(defaultName: \"Asset Name\")\nlineage_asset_name: String\n @amazon.datazone#displayname(defaultName: \"Data Quality Profile Location\")\ndata_quality_profile_location: String\n @required\n@amazon.datazone#displayname(defaultName: \"Task Id\")\n @amazon.datazone#searchable\ntask_id: String\n @amazon.datazone#displayname(defaultName: \"Data Profile Location\")\ndata_profile_location: String\n  } "
 				},
 				status: "ENABLED",
 		}));

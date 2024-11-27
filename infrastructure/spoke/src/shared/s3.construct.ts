@@ -6,8 +6,8 @@ export interface S3SpokeConstructProperties {
 	deleteBucket: boolean;
 }
 
-export const bucketNameParameter = `/df/spoke/shared/bucketName`;
-export const bucketArnParameter = `/df/spoke/shared/bucketArn`;
+export const bucketNameParameter = `/dm/spoke/shared/bucketName`;
+export const bucketArnParameter = `/dm/spoke/shared/bucketArn`;
 
 export class S3Spoke extends Construct {
 	public readonly bucketName: string;
@@ -18,10 +18,10 @@ export class S3Spoke extends Construct {
 
 		const accountId = Stack.of(this).account;
 		const region = Stack.of(this).region;
-		const bucketName = `df-spoke-${accountId}-${region}`;
+		const bucketName = `dm-spoke-${accountId}-${region}`;
 
 
-		const bucket = new s3.Bucket(this, 'dfBucket', {
+		const bucket = new s3.Bucket(this, 'dmBucket', {
 			bucketName: bucketName,
 			encryption: s3.BucketEncryption.S3_MANAGED,
 			intelligentTieringConfigurations: [

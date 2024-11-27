@@ -13,12 +13,12 @@ import { FastifyBaseLogger } from "fastify";
 import { Asset } from "./schemas.js";
 
 
-export enum DFAssetType {
-    S3 = "DF_S3_Custom_Asset"
+export enum DMAssetType {
+    S3 = "DM_S3_Custom_Asset"
 }
 
-export enum DFMetadataFormName {
-    S3 = "df_s3_asset_form"
+export enum DMMetadataFormName {
+    S3 = "dm_s3_asset_form"
 }
 
 export interface S3DfForm {
@@ -108,12 +108,12 @@ export class AssetsRepository {
           })
         );
         const assetType = response.item.assetListing.assetType;
-        if (assetType !== DFAssetType.S3) {
+        if (assetType !== DMAssetType.S3) {
             throw new InvalidAssetError("The requested assetListing has an unsupported type");
         }
         const metadataForms = JSON.parse(response.item.assetListing.forms);
-        const dfS3MetadataForm = metadataForms[DFMetadataFormName.S3];
-        const validatedForm = this.validateDfS3MetadataForm(dfS3MetadataForm);
+        const dmS3MetadataForm = metadataForms[DMMetadataFormName.S3];
+        const validatedForm = this.validateDfS3MetadataForm(dmS3MetadataForm);
         const asset: Asset = {
             type: "S3",
             detail: {
@@ -137,13 +137,13 @@ export class AssetsRepository {
       )}`
     );
     if (!rawForm.arn) {
-      throw new Error("Expected to find DF metadata form with an arn.");
+      throw new Error("Expected to find DM metadata form with an arn.");
     }
     if (!rawForm.accountId) {
-      throw new Error("Expected to find DF metadata form with an accountId.");
+      throw new Error("Expected to find DM metadata form with an accountId.");
     }
     if (!rawForm.region) {
-        throw new Error("Expected to find DF metadata form with a region.");
+        throw new Error("Expected to find DM metadata form with a region.");
       }
     this.logger.debug(
       `AssetsRepository > validateDfS3MetadataForm > exit`

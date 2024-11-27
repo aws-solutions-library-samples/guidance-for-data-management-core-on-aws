@@ -18,7 +18,7 @@ export class TransformJobTask {
 		this.log.info(`TransformJobTask > process > in > event: ${JSON.stringify(event)}`);
 
 		const id = event.dataAsset?.catalog?.assetId ? event.dataAsset.catalog.assetId : event.dataAsset.id;
-		const recipeName = `df-${id}`;
+		const recipeName = `dm-${id}`;
 
 		const jobName = `${event.dataAsset.workflow.name}-${id}-profile`;
 		const outputKey = `${this.jobsBucketPrefix}/${event.dataAsset.catalog.domainId}/${event.dataAsset.catalog.projectId}/${id}`;

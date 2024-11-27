@@ -3,7 +3,7 @@ export interface Table {
 	schema: string;
 }
 
-export const DATABASE_NAME = 'df';
+export const DATABASE_NAME = 'dm';
 export const PRODUCT_TABLE_NAME = 'products';
 
 const PRODUCT_SCHEMA = (tableName: string) => `CREATE TABLE ${DATABASE_NAME}.schemaName.${tableName} (\

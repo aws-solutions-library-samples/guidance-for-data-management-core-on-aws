@@ -18,7 +18,7 @@ const addFederatedIdentityProvider = async (
 ): Promise<string | undefined> => {
 	console.log(`cognito.customResource > addFederatedIdentityProvider > in`);
 	// Limited to 32 characters
-	const providerName = `df-sso`;
+	const providerName = `dm-sso`;
 
 	// GET User Pool ID that has already been created
 	const userPoolParam = await ssmClient.send(
@@ -118,7 +118,7 @@ const addFederatedIdentityProvider = async (
 		const client = await cognitoClient.send(
 			new CreateUserPoolClientCommand({
 				UserPoolId: userPoolParam.Parameter?.Value,
-				ClientName: `df-sso-client`,
+				ClientName: `dm-sso-client`,
 				SupportedIdentityProviders: [providerName],
 				CallbackURLs: callbackUrls?.split(','),
 				AllowedOAuthFlows: ['implicit'],

@@ -18,7 +18,7 @@ const app = new cdk.App();
 // tags the entire deployment
 Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
 
-const stackNamePrefix = `df-demo`;
+const stackNamePrefix = `dm-demo`;
 
 const stackName = (suffix: string) => `${stackNamePrefix}-${suffix}`;
 const stackDescription = (moduleName: string) => `Infrastructure for ${moduleName} module`;
@@ -31,6 +31,9 @@ const deployHub = app.node.tryGetContext('deployHub') as boolean;
 const IdentityStoreAdminUserIdStr = app.node.tryGetContext('IdentityStoreAdminUserId') as string;
 const IdentityStoreAdminUserId = IdentityStoreAdminUserIdStr === 'undefined' ? undefined : IdentityStoreAdminUserIdStr;
 
+const DataZoneAdminRoleArnStr = app.node.tryGetContext('DataZoneAdminRoleArnStr') as string;
+const DataZoneAdminRoleArn = DataZoneAdminRoleArnStr === 'undefined' ? undefined : DataZoneAdminRoleArnStr;
+
 // Spoke parameters
 const deploySpoke = app.node.tryGetContext('deployHub') as boolean;
 const vpcId = app.node.tryGetContext('vpcId') as boolean;
@@ -41,8 +44,8 @@ const dataZoneProjectId = dataZoneProjectIdStr === 'undefined' ? undefined : dat
 
 const deployPlatform = (callerEnvironment?: { accountId?: string; region?: string }): void => {
 	const env: cdk.Environment = {
-		// The DF_REGION domain variable
-		region: process.env?.['DF_REGION'] || callerEnvironment?.region,
+		// The DM_REGION domain variable
+		region: process.env?.['DM_REGION'] || callerEnvironment?.region,
 		account: callerEnvironment?.accountId,
 	};
 
@@ -51,6 +54,7 @@ const deployPlatform = (callerEnvironment?: { accountId?: string; region?: strin
 			stackName: stackName('hub'),
 			description: stackDescription('demo hub infrastructure'),
 			IdentityStoreAdminUserId,
+			dataZoneAdminRoleArn: DataZoneAdminRoleArn,
 			env,
 		});
 	}

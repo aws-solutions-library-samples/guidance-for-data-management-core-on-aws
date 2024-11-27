@@ -6,7 +6,7 @@ import { Construct } from 'constructs';
 
 export interface IAMConstructProperties {}
 
-export const identityStoreRoleParameter = `/df-demo/management/identityStoreRole`;
+export const identityStoreRoleParameter = `/dm-demo/management/identityStoreRole`;
 
 export class IAMConstruct extends Construct {
 	constructor(scope: Construct, id: string, props: IAMConstructProperties) {

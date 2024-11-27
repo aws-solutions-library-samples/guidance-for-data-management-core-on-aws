@@ -7,8 +7,8 @@ export interface S3ConstructProperties {
 	accessLogBucketName: string;
 }
 
-export const bucketNameParameter = `/df/shared/bucketName`;
-export const bucketArnParameter = `/df/shared/bucketArn`;
+export const bucketNameParameter = `/dm/shared/bucketName`;
+export const bucketArnParameter = `/dm/shared/bucketArn`;
 
 export class S3 extends Construct {
 	public readonly bucketName: string;
@@ -19,10 +19,10 @@ export class S3 extends Construct {
 
 		const accountId = Stack.of(this).account;
 		const region = Stack.of(this).region;
-		const bucketName = `df-${accountId}-${region}-hub`;
+		const bucketName = `dm-${accountId}-${region}-hub`;
 		const accessLogBucket = s3.Bucket.fromBucketName(this, 'accessLogBucket', props.accessLogBucketName);
 
-		const bucket = new s3.Bucket(this, 'dfBucket', {
+		const bucket = new s3.Bucket(this, 'dmBucket', {
 			bucketName: bucketName,
 			encryption: s3.BucketEncryption.S3_MANAGED,
 			intelligentTieringConfigurations: [

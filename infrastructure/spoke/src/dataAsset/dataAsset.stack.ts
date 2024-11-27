@@ -4,7 +4,7 @@ import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { NagSuppressions } from 'cdk-nag';
 
 import { DataAssetSpoke } from "./dataAsset.construct.js";
-import { dfSpokeEventBusName, OrganizationUnitPath } from '@df/cdk-common';
+import { dmSpokeEventBusName, OrganizationUnitPath } from '@dm/cdk-common';
 import { bucketNameParameter } from '../shared/s3.construct.js';
 import { GlueDatabaseArnParameter } from '../shared/sharedSpoke.stack.js';
 // import { bucketNameParameter } from '../shared/s3.construct.js';
@@ -17,7 +17,7 @@ export type DataAssetSpokeStackProperties = StackProps & {
 };
 
 
-export const dataAssetStateMachineArnParameter = `/df/spoke/dataAsset/stateMachineArn`;
+export const dataAssetStateMachineArnParameter = `/dm/spoke/dataAsset/stateMachineArn`;
 
 export class DataAssetSpokeStack extends Stack {
     constructor(scope: Construct, id: string, props: DataAssetSpokeStackProperties) {
@@ -29,7 +29,7 @@ export class DataAssetSpokeStack extends Stack {
         const dataAsset = new DataAssetSpoke(this, 'DataAssetSpoke', {
             moduleName: props.moduleName,
             hubAccountId: props.hubAccountId,
-            spokeEventBusName: dfSpokeEventBusName,
+            spokeEventBusName: dmSpokeEventBusName,
             bucketName,
             orgPath: props.orgPath,
             glueDatabaseArn,

@@ -38,10 +38,20 @@ export const deployTasksHandlerChain = (): TasksHandler => {
 	return hubTask;
 };
 
-export const PostDeployTasksHandlerChain = (): TasksHandler => {
-	const loginTask = diContainer.cradle.identityStoreTasksHandler;
+export const UserCreationTasksHandlerChain = (): TasksHandler => {
+	const userCreationTask = diContainer.cradle.identityStoreTasksHandler;
+	return userCreationTask;
+};
 
-	loginTask.setNext(diContainer.cradle.postDeploymentTasksHandler).setNext(diContainer.cradle.loginTasksHandler);
+export const AddProjectMemberTasksHandlerChain = (): TasksHandler => {
+	const addProjectMemberTask = diContainer.cradle.cdkDemoTasksHandler;
+	return addProjectMemberTask;
+};
+
+export const PostDeployTasksHandlerChain = (): TasksHandler => {
+	const loginTask = diContainer.cradle.postDeploymentTasksHandler;
+
+	loginTask.setNext(diContainer.cradle.loginTasksHandler);
 
 	return loginTask;
 };

@@ -1,7 +1,7 @@
 import type { BaseLogger } from 'pino';
 import { DataAssetTask, TaskFailureEvent, TaskType } from '../../models.js';
-import type { CreateResponseEventDetails, EventPublisher } from '@df/events';
-import { DATA_ASSET_SPOKE_CREATE_RESPONSE_EVENT, DATA_ASSET_SPOKE_EVENT_SOURCE, EventBridgeEventBuilder } from '@df/events';
+import type { CreateResponseEventDetails, EventPublisher } from '@dm/events';
+import { DATA_ASSET_SPOKE_CREATE_RESPONSE_EVENT, DATA_ASSET_SPOKE_EVENT_SOURCE, EventBridgeEventBuilder } from '@dm/events';
 import type { S3Utils } from '../../../../common/s3Utils.js';
 import { DeleteDatasetCommand, type DataBrewClient, DeleteJobCommand } from '@aws-sdk/client-databrew';
 import axios from 'axios';
@@ -64,7 +64,7 @@ export class FailureTask {
         // Remove the profile job
         try {
             await this.dataBrewClient.send(new DeleteJobCommand({
-                Name: `df-${id}-dataProfile`
+                Name: `dm-${id}-dataProfile`
             }));
         } catch (err) {
             this.log.info(`FailureTask > process > DeleteProfileJobFailed > error: ${JSON.stringify(err)}`);

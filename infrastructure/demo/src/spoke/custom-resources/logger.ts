@@ -1,5 +1,5 @@
 import { Logger } from '@aws-lambda-powertools/logger';
 
-const logger = new Logger({ serviceName: 'df-demo-custom-resource' });
+const logger = new Logger({ serviceName: 'dm-demo-custom-resource' });
 
 export { logger };

@@ -42,19 +42,19 @@ export class PostDeploymentPromptHandler extends PromptHandler {
 		answers.spokeGlueDatabaseName = await getParameterValue('spoke', 'shared/glue/databaseName');
 
 		// Det dataZone glue Access Role ARN
-		answers.dataZoneGlueAccessRoleArn = await getParameterValue('hub', 'datazone/glueRoleArn', 'df-demo');
+		answers.dataZoneGlueAccessRoleArn = await getParameterValue('hub', 'datazone/glueRoleArn', 'dm-demo');
 
 		// Get demo role created for Glue access
-		('/df/spoke/shared/glueRoleArn');
+		('/dm/spoke/shared/glueRoleArn');
 		answers.spokeGlueRoleArn = await getParameterValue('spoke', 'shared/glueRoleArn');
 
 		//Get spoke info
 		answers.spokeBucketArn = await getParameterValue('spoke', 'shared/bucketArn');
 		answers.spokeBucketName = await getParameterValue('spoke', 'shared/bucketName');
 
-		answers.dataZoneDataLakeEnvironmentId = await getParameterValue('hub', 'datazone/dataLakeEnvironmentId', 'df-demo');
+		answers.dataZoneDataLakeEnvironmentId = await getParameterValue('hub', 'datazone/dataLakeEnvironmentId', 'dm-demo');
 
-		answers.dataZoneDataLakeEnvironmentName = await getParameterValue('hub', 'datazone/dataLakeEnvironmentName', 'df-demo');
+		answers.dataZoneDataLakeEnvironmentName = await getParameterValue('hub', 'datazone/dataLakeEnvironmentName', 'dm-demo');
 		if (!answers?.dataZoneDataLakeEnvironmentId) {
 			spinner.fail();
 			bomb('No DataLake environment found in the DataZone domain.');

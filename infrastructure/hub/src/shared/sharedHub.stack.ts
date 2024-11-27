@@ -1,7 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Network, DfVpcConfig } from './network.construct.js';
 import { Cognito } from './cognito.construct.js';
-import { Bus, userPoolIdParameter } from '@df/cdk-common';
+import { Bus, userPoolIdParameter } from '@dm/cdk-common';
 import { SSM } from './ssm.construct.js';
 import type { Construct } from 'constructs';
 import { Compute } from './compute.construct.js';
@@ -37,13 +37,13 @@ export class SharedHubInfrastructureStack extends Stack {
 
 		new ssm.StringParameter(this, 'bucketNameParameter', {
 			parameterName: bucketNameParameter,
-			description: 'shared Bucket Name for DF',
+			description: 'shared Bucket Name for DM',
 			stringValue: s3.bucketName,
 		});
 
 		new ssm.StringParameter(this, 'bucketArnParameter', {
 			parameterName: bucketArnParameter,
-			description: 'shared Bucket Arn for DF',
+			description: 'shared Bucket Arn for DM',
 			stringValue: s3.bucketArn,
 		});
 

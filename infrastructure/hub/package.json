@@ -1,7 +1,7 @@
 {
-	"name": "@df/infrastructure-hub",
+	"name": "@dm/infrastructure-hub",
 	"version": "1.0.0",
-	"description": "DF: Hub Infrastructure.",
+	"description": "DM: Hub Infrastructure.",
 	"author": "Pouya Bahavar <bahavar@amazon.com>",
 	"type": "module",
 	"exports": {
@@ -22,8 +22,8 @@
 		"@aws-sdk/client-identitystore": "~3",
 		"@aws-sdk/client-ssm": "~3",
 		"@aws-sdk/client-sso-admin": "~3",
-		"@df/cdk-common": "workspace:*",
-		"@df/events": "workspace:*",
+		"@dm/cdk-common": "workspace:*",
+		"@dm/events": "workspace:*",
 		"awilix": "~8",
 		"aws-cdk-lib": "~2",
 		"cdk-nag": "~2",

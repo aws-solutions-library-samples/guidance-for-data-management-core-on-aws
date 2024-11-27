@@ -1,7 +1,7 @@
 import type { FastifyBaseLogger } from 'fastify';
 import type { DataAssetListOptions, DataAssetResource } from './schemas.js';
 import { AssetItem, type DataZoneClient, GetAssetCommand, GetAssetCommandOutput, SearchCommand, SearchCommandOutput } from '@aws-sdk/client-datazone';
-import { validateNotEmpty } from "@df/validators";
+import { validateNotEmpty } from "@dm/validators";
 
 export class DataAssetService {
 

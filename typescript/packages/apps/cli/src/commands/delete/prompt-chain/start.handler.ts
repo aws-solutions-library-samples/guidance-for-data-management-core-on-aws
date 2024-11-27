@@ -37,7 +37,7 @@ export class StartPromptHandler extends PromptHandler {
 		answers.deleteHub = true;
 
 		let shouldContinue = await confirm({
-			message: 'This will delete Data Fabric from your account, Continue?',
+			message: 'This will delete Data Management from your account, Continue?',
 		});
 		if (!shouldContinue) {
 			bomb();

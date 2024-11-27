@@ -1,11 +1,11 @@
-# Data Fabric CLI
+# Data Management CLI
 
 ## Overview
 
-`data-fabric cli` is a CLI that offers management of Data fabric installations.
-Currently the CLI only supports the deployment of the entire Data Fabric into a single AWS Account
+`data-management cli` is a CLI that offers management of Data Management installations.
+Currently the CLI only supports the deployment of the entire Data Management into a single AWS Account
 
-**_Note:_** The Data Fabric deployed by the CLI is meant to be used for evaluation purposes only and is not meant to be used in a production setting.
+**_Note:_** The Data Management deployed by the CLI is meant to be used for evaluation purposes only and is not meant to be used in a production setting.
 
 ## Supported Operating systems
 
@@ -50,37 +50,37 @@ In addition to the general prerequisites above windows systems have the followin
 2. To install dependencies:
 
 ```bash
-df-core/typescript/packages/apps/cli> bun install
+guidance-for-data-management-on-aws/typescript/packages/apps/cli> bun install
 ```
 
 3. To make available globally as a CLI:
 
 ```bash
-df-core/typescript/packages/apps/cli> bun link
-df-core/typescript/packages/apps/cli> bun link @df/cli
+guidance-for-data-management-on-aws/typescript/packages/apps/cli> bun link
+guidance-for-data-management-on-aws/typescript/packages/apps/cli> bun link @dm/cli
 ```
 
 4. To run:
 
 ```bash
-> cd ./guidance-for-data-fabric-on-aws
-> data-fabric install
+> cd ./guidance-for-data-management-on-aws
+> data-management install
 ```
 
 ## Usage
 
 ```bash
-> data-fabric --help
-  ____        _          _____     _          _
- |  _ \  __ _| |_ __ _  |  ___|_ _| |__  _ __(_) ___
- | | | |/ _` | __/ _` | | |_ / _` | '_ \| '__| |/ __|
- | |_| | (_| | || (_| | |  _| (_| | |_) | |  | | (__
- |____/ \__,_|\__\__,_| |_|  \__,_|_.__/|_|  |_|\___|
-
-data-fabric <command>
+> data-management --help
+ ____        _          __  __                                                   _   
+ |  _ \  __ _| |_ __ _  |  \/  | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+ | | | |/ _` | __/ _` | | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '_ ` _ \ / _ \ '_ \| __|
+ | |_| | (_| | || (_| | | |  | | (_| | | | | (_| | (_| |  __/ | | | | |  __/ | | | |_ 
+ |____/ \__,_|\__\__,_| |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                                                  |___/                               
+data-management <command>
 
 Commands:
-  data-fabric install  Installs Data Fabric for evaluation within a single AWS Account.
+  data-management install  Installs Data Management for evaluation within a single AWS Account.
 
 Options:
   --version  Show version number                                                                                                                                                                                                                                                                                                                                                         [boolean]
@@ -93,22 +93,22 @@ For mac & linux:
 
 ```bash
 > export AWS_REGION=<AWS Region where IAM Identity center is enabled on>
-> data-fabric install
+> data-management install
 ```
 
 For Windows:
 
 ```bash
 > set AWS_REGION=<AWS Region where IAM Identity center is enabled on>
-> data-fabric install
+> data-management install
 ```
 
-The `install` command walks the user through an opinionated single-account installation of Data Fabric. Note that this single-account mode is recommended for evaluation only. A best practice for a production deployment would be to deploy the different components of the Data Fabric into different accounts.
+The `install` command walks the user through an opinionated single-account installation of Data Management. Note that this single-account mode is recommended for evaluation only. A best practice for a production deployment would be to deploy the different components of the Data Management into different accounts.
 
 #### IAM Identity Center application
 
 There is manual step that need to be performed for the initial deployment.
-Data Fabric requires an IAM Identity center to be setup for SAML authentication.
+Data Management requires an IAM Identity center to be setup for SAML authentication.
 
 Once the setup reaches the following question pause the installation and follow instructions bellow to setup the application.
 
@@ -137,21 +137,21 @@ Once the setup reaches the following question pause the installation and follow 
 Once the application is setup continue with the CLI installation by answering `Y` to:
 `Have you setup your IAM Identity Center application?`
 
-Follow the command prompts to finish the Data Fabric installation.
+Follow the command prompts to finish the Data Management installation.
 
 # Deployment Validation
 
 1. Check that the following CloudFormation stacks have been successfully created in your account:
-    1. `df-spoke-shared`
-    2. `df-spoke-dataAsset`
-    3. `df-hub-shared`
-    4. `df-hub-CognitoCustomStack`
-    5. `df-hub-SsoCustomStack`
-    6. `df-hub-datalineage`
-    7. `df-hub-dataAsset`
-    8. `df-demo-management`
-    9. `df-demo-hub`
-    10. `df-demo-spoke`
+    1. `dm-spoke-shared`
+    2. `dm-spoke-dataAsset`
+    3. `dm-hub-shared`
+    4. `dm-hub-CognitoCustomStack`
+    5. `dm-hub-SsoCustomStack`
+    6. `dm-hub-datalineage`
+    7. `dm-hub-dataAsset`
+    8. `dm-demo-management`
+    9. `dm-demo-hub`
+    10. `dm-demo-spoke`
 
 ## Running the Guidance
 
@@ -161,9 +161,9 @@ The following outlines steps to be done to create an asset using the Data Asset 
 
 1. Generate a token
     1. Go to Amazon Cognito in the Hub account
-    2. Select the `df` user pool
+    2. Select the `dm` user pool
     3. Click **App Integration**
-    4. Scroll the the bottom of the page and select `df-sso-client` from the App client list
+    4. Scroll the the bottom of the page and select `dm-sso-client` from the App client list
     5. Scroll to the Hosted UI section and click View Hosted UI
     6. Log in with your configured IAM Identity Center User
     7. You should be redirected to localhost in your browser
@@ -171,7 +171,7 @@ The following outlines steps to be done to create an asset using the Data Asset 
     9. It should take the form of `localhost:3000/#access_token=<ACCESS_TOKEN>&id_token=<ID_TOKEN>&token_type=Bearer&expires_in=3600`
     10. Copy the ID token, which should be valid for 1 hour. You can click through the hosted UI again to generate a new token.
 2. Open an API client of your choice
-    1. Go to AWS Systems Manager Parameter Store and open the `/df/dataAsset/apiUrl` parameter. This is the API URL.
+    1. Go to AWS Systems Manager Parameter Store and open the `/dm/dataAsset/apiUrl` parameter. This is the API URL.
     2. Configure the client as follows:
         1. Method `POST`
         2. URL: `<API_URL>dataAssetTasks`
@@ -198,8 +198,8 @@ The following outlines steps to be done to create an asset using the Data Asset 
             ```
         6. Run the request
         7. Check that the Step Functions have completed successfully.
-            1. Go to the AWS Console in the hub account and look at the `df-data-asset` State Machine in AWS Step Functions. You should see a successful an execution running.
-            2. Go to the AWS Console in the spoke account and look at the `df-spoke-data-asset` State Machine in AWS Step Functions. You should see an execution running.
+            1. Go to the AWS Console in the hub account and look at the `dm-data-asset` State Machine in AWS Step Functions. You should see a successful an execution running.
+            2. Go to the AWS Console in the spoke account and look at the `dm-spoke-data-asset` State Machine in AWS Step Functions. You should see an execution running.
             3. Once the executions complete, you should be able to[find the new assets in the DataZone data catalog](https://docs.aws.amazon.com/datazone/latest/userguide/search-for-data.html).
 
 #### Sample Dataset
@@ -212,11 +212,11 @@ A simple sample dataset file can be found [in docs/sample_data/sample_products.c
 | Bravo   | 102   | 5      | 961.00 |
 | Charlie | 155   | 4      | 472.00 |
 
-These rows represent a table of product names, the number of units in inventory, their weight, and their cost. Below we will add this data as assets in the data fabric using the Data Asset API. There is an example of creating a Glue table asset backed by S3 or a Redshift table. Both of these assets will be managed assets in DataZone meaning other users of DataZone can subscribe to and consume these when published.
+These rows represent a table of product names, the number of units in inventory, their weight, and their cost. Below we will add this data as assets in the Data Management using the Data Asset API. There is an example of creating a Glue table asset backed by S3 or a Redshift table. Both of these assets will be managed assets in DataZone meaning other users of DataZone can subscribe to and consume these when published.
 
 #### Glue Tables
 
-1. Load the CSV file into the `df-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` S3 bucket
+1. Load the CSV file into the `dm-spoke-<SPOKE_ACCOUNT_ID>-<REGION>` S3 bucket
 2. Make an API request replacing the request body `workflow` with:
     ```
     {
@@ -292,42 +292,42 @@ After the data asset workflow completes a new data asset will be published to th
 
 #### Catalog
 
-The data fabric catalog can be searched within Amazon DataZone. See the [documentation](https://docs.aws.amazon.com/datazone/latest/userguide/search-for-data.html) for more information.
+The Data Management catalog can be searched within Amazon DataZone. See the [documentation](https://docs.aws.amazon.com/datazone/latest/userguide/search-for-data.html) for more information.
 
 #### Lineage
 
-You can view the lineage information from the Marquez portal or the Marquez API. The location of these endpoints can be found in the following SSM parameters `/df/dataLineage/openLineageApiUrl` and `/df/dataLineage/openLineageWebUrl`.
+You can view the lineage information from the Marquez portal or the Marquez API. The location of these endpoints can be found in the following SSM parameters `/dm/dataLineage/openLineageApiUrl` and `/dm/dataLineage/openLineageWebUrl`.
 
 ## Next Steps
 
-1. Customers can bring their own tools for profiling/quality, etc. to the Data Fabric.
-2. Customers can attach into \*DF message bus (EventBridge) to trigger any other processes that need to be added.
-3. Customers can author their own data products. See the [Guidance for Sustainability Data Fabric on AWS](https://github.com/aws-solutions-library-samples/guidance-for-sustainability-data-fabric-on-aws) for an example data product implementation. If you would like to develop your own data product, see the guide on [Authoring Your Own Data Product](./docs/tutorials/dataProduct/README.md).
+1. Customers can bring their own tools for profiling/quality, etc. to the Data Management.
+2. Customers can attach into \*DM message bus (EventBridge) to trigger any other processes that need to be added.
+3. Customers can author their own data products. See the [Guidance for Sustainability Data Management on AWS](https://github.com/aws-solutions-library-samples/guidance-for-sustainability-data-management-on-aws) for an example data product implementation. If you would like to develop your own data product, see the guide on [Authoring Your Own Data Product](./docs/tutorials/dataProduct/README.md).
 
 ## Cleanup
 
-To Cleanup all resources created for Data Fabric, perform the following steps.
+To Cleanup all resources created for Data Management, perform the following steps.
 
 ### `delete` command
 
-To Delete Data Fabric from your account run the following command and go through the prompts.
+To Delete Data Management from your account run the following command and go through the prompts.
 This command will delete most resources that have been deployed.
 
 To Delete:
 
 ```bash
 > cd <cloned repo folder with branch to be summarized>
-> data-fabric delete
+> data-management delete
 ```
 
 ### Manual cleanup
 
-Several of the resources deployed by the Data Fabric need to be removed manually, perform the following steps to remove them from your account:
+Several of the resources deployed by the Data Management need to be removed manually, perform the following steps to remove them from your account:
 
 1. AWS Lake Formation cleanup
     1. Navigate to AWS Lake Formation > Permissions > Data lake permission : And Grant `Drop` permissions to your user on the `datafabricdatalakeenvironment_pub_db` and `datafabricdatalakeenvironment_sub_db` databases
     2. Navigate to AWS Lake Formation > Data Catalog > Databases : And delete `datafabricdatalakeenvironment_pub_db` and `datafabricdatalakeenvironment_sub_db`
-    3. Navigate to AWS Lake Formation > Administration > Administrative roles and tasks: And remove the `AmazonDataZoneGlueAccess-<region>-<DataZone Domain Id>`, `dataFabricDomainExecutionRole` , `dataFabricDomainProvisioningRole`
+    3. Navigate to AWS Lake Formation > Administration > Administrative roles and tasks: And remove the `AmazonDataZoneGlueAccess-<region>-<DataZone Domain Id>`, `dataManagementDomainExecutionRole` , `dataManagementDomainProvisioningRole`
 
 ## Notices
 

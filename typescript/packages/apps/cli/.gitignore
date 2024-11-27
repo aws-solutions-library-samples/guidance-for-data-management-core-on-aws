@@ -178,5 +178,5 @@ dist
 answers.json
 
 # Load balancer certificates
-data-fabric.private.key
-data-fabric.public.crt
+data-management.private.key
+data-management.public.crt

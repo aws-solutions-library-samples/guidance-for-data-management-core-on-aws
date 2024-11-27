@@ -1,7 +1,7 @@
-import { validateNotEmpty } from '@df/validators';
+import { validateNotEmpty } from '@dm/validators';
 import type { BaseLogger } from 'pino';
 import type { DataAssetTaskStatusRepository } from './taskRepository.js';
-import type { StepFunctionStateChangeEvent, DataAssetStepFunctionInput } from '@df/events';
+import type { StepFunctionStateChangeEvent, DataAssetStepFunctionInput } from '@dm/events';
 
 export class StepFunctionsEventProcessor {
     constructor(

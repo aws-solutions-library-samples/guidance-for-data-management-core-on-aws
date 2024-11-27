@@ -1,20 +1,20 @@
 import type { Handler } from 'aws-lambda';
-import type { DataAssetCatalog, RunEvent } from '@df/events';
+import type { DataAssetCatalog, RunEvent } from '@dm/events';
 import type { Workflow } from '../../api/dataAssetTask/schemas.js';
 
 export enum TaskType {
-	Root = 'df_data_asset',
-	DataProfileTask = 'df_data_profile',
-	DataQualityProfileTask = 'df_data_quality_profile',
-	RecipeTask = 'df_recipe',
-	GlueCrawlerTask = 'df_glue_crawler',
-	LineageTask = 'df_data_lineage',
-	FailureTask = 'df_failure',
-	CreateDataSourceTask = 'df_create_data_source',
-	RunDataSourceTask = 'df_run_data_source',
-	DataSetTask = 'df_data_set',
-	TransformJobTask = 'df_transform_job',
-	SpokeEventProcessor = 'df_spoke_event_processor',
+	Root = 'dm_data_asset',
+	DataProfileTask = 'dm_data_profile',
+	DataQualityProfileTask = 'dm_data_quality_profile',
+	RecipeTask = 'dm_recipe',
+	GlueCrawlerTask = 'dm_glue_crawler',
+	LineageTask = 'dm_data_lineage',
+	FailureTask = 'dm_failure',
+	CreateDataSourceTask = 'dm_create_data_source',
+	RunDataSourceTask = 'dm_run_data_source',
+	DataSetTask = 'dm_data_set',
+	TransformJobTask = 'dm_transform_job',
+	SpokeEventProcessor = 'dm_spoke_event_processor',
 }
 
 export type DataAssetJob = {

@@ -1,6 +1,6 @@
 {
-	"name": "@df/dataLineage",
-	"description": "DF: Data lineage functionality",
+	"name": "@dm/dataLineage",
+	"description": "DM: Data lineage functionality",
 	"version": "1.0.0",
 	"author": "Pouya Bahavar <bahavar@amazon.com>",
 	"exports": {
@@ -20,9 +20,9 @@
 		"test": "npm run build && vitest run --passWithNoTests"
 	},
 	"dependencies": {
-        "@df/clients": "workspace:*",
-		"@df/events": "workspace:*",
-		"@df/validators": "workspace:*",
+        "@dm/clients": "workspace:*",
+		"@dm/events": "workspace:*",
+		"@dm/validators": "workspace:*",
 		"@fastify/awilix": "~5",
 		"awilix": "~10",
 		"aws-lambda": "~1",

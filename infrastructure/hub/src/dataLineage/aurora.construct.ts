@@ -28,11 +28,11 @@ export class AuroraDatabase extends Construct {
 	constructor(scope: Construct, id: string, props: AuroraDatabaseConstructProperties) {
 		super(scope, id);
 
-		this.instanceName = `df`;
+		this.instanceName = `dm`;
 		this.databaseUsername = 'marquez';
 		this.databaseName = 'marquez';
 
-		const clusterName = `df-cluster`;
+		const clusterName = `dm-cluster`;
 
 		const iamPolicy = new Policy(this, 'iam-policy', {
 			statements: [
@@ -90,7 +90,7 @@ export class AuroraDatabase extends Construct {
 
 		// this.databaseSecret.addRotationSchedule('RotationSchedule', {
 		//     hostedRotation: HostedRotation.postgreSqlSingleUser({
-		//         functionName: `df-dataLineage-secret-rotation`
+		//         functionName: `dm-dataLineage-secret-rotation`
 		//     })
 		// });
 
@@ -109,7 +109,7 @@ export class AuroraDatabase extends Construct {
 
 		const subnetGroup = new SubnetGroup(this, 'aurora-rds-subnet-group', {
 			description: `Aurora RDS Subnet Group for database ${this.instanceName}`,
-			subnetGroupName: `df-aurora-rds-subnet-group`,
+			subnetGroupName: `dm-aurora-rds-subnet-group`,
 			vpc: props.vpc,
 			removalPolicy: RemovalPolicy.DESTROY,
 			vpcSubnets: {
@@ -145,7 +145,7 @@ export class AuroraDatabase extends Construct {
 			instances: 1,
 			cloudwatchLogsRetention: RetentionDays.ONE_WEEK,
 			iamAuthentication: false,
-			clusterIdentifier: `df-aurora-cluster`,
+			clusterIdentifier: `dm-aurora-cluster`,
 			subnetGroup: subnetGroup,
 		});
 

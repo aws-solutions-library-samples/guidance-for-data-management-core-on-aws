@@ -7,10 +7,10 @@ import { Cradle, diContainer, FastifyAwilixOptions, fastifyAwilixPlugin } from '
 import { asFunction, asValue, Lifetime } from 'awilix';
 import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import { DynamoDbUtils } from '@df/dynamodb-utils';
+import { DynamoDbUtils } from '@dm/dynamodb-utils';
 import { DataAssetService } from '../api/dataAsset/service.js';
-import { BaseCradle, registerBaseAwilix } from '@df/resource-api-base';
-import { DATA_ASSET_HUB_EVENT_SOURCE, DATA_ASSET_SPOKE_EVENT_SOURCE, EventPublisher } from '@df/events';
+import { BaseCradle, registerBaseAwilix } from '@dm/resource-api-base';
+import { DATA_ASSET_HUB_EVENT_SOURCE, DATA_ASSET_SPOKE_EVENT_SOURCE, EventPublisher } from '@dm/events';
 import { ConnectionTask } from '../stepFunction/tasks/spoke/create/connectionTask.js';
 import { ProfileJobTask } from '../stepFunction/tasks/spoke/create/profileJobTask.js';
 import { DataSetTask } from '../stepFunction/tasks/spoke/create/dataSetTask.js';

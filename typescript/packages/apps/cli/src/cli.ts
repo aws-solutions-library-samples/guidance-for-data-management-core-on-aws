@@ -18,7 +18,7 @@ import * as installCommand from './commands/install/install.command';
 import * as deleteCommand from './commands/delete/delete.command';
 
 console.log(
-	figlet.textSync('Data Fabric', {
+	figlet.textSync('Data Management', {
 		// font: 'Poison',
 		width: 120,
 		whitespaceBreak: true,
@@ -27,4 +27,4 @@ console.log(
 
 const yargsInstance = yargs(hideBin(process.argv));
 
-await yargsInstance.wrap(yargsInstance.terminalWidth()).scriptName('data-fabric').command([installCommand, deleteCommand]).demandCommand(1).strict().help().parse();
+await yargsInstance.wrap(yargsInstance.terminalWidth()).scriptName('data-management').command([installCommand, deleteCommand]).demandCommand(1).strict().help().parse();

@@ -5,6 +5,7 @@ import { S3Construct } from './s3.construct.js';
 
 export type DemoHubStackProperties = StackProps & {
 	IdentityStoreAdminUserId?: string;
+	dataZoneAdminRoleArn?: string;
 };
 
 export class DemoHubStack extends Stack {
@@ -13,7 +14,7 @@ export class DemoHubStack extends Stack {
 
 		const accountId = Stack.of(this).account;
 		const region = Stack.of(this).region;
-		const bucketName = `df-demo-${accountId}-${region}`;
+		const bucketName = `dm-demo-${accountId}-${region}`;
 
 		const s3 = new S3Construct(this, 's3', {
 			deleteBucket: true,
@@ -22,6 +23,7 @@ export class DemoHubStack extends Stack {
 
 		const dataZone = new DatazoneConstruct(this, 'Datazone', {
 			userIdentifier: props.IdentityStoreAdminUserId,
+			dataZoneAdminRoleArn: props.dataZoneAdminRoleArn,
 			bucketName,
 		});
 		dataZone.node.addDependency(s3);

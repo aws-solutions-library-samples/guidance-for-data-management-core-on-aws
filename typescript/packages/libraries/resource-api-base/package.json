@@ -1,5 +1,5 @@
 {
-	"name": "@df/resource-api-base",
+	"name": "@dm/resource-api-base",
 	"version": "1.0.0",
 	"description": "Base containing common functionality to support all resource API's.",
 	"author": "Dean Hart <deanhart@amazon.com>",
@@ -23,7 +23,7 @@
 		"@aws-sdk/client-sqs": "~3",
 		"@aws-sdk/lib-dynamodb": "~3",
 		"@aws-sdk/util-dynamodb": "~3",
-		"@df/lambda-invoker": "workspace:*",
+		"@dm/lambda-invoker": "workspace:*",
 		"@fastify/awilix": "~5",
 		"@fastify/type-provider-typebox": "~4",
 		"@sinclair/typebox": "~0",

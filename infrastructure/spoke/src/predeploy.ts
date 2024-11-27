@@ -1,5 +1,5 @@
 
-import { getDfAwsEnvironment } from '@df/cdk-common';
+import { getDfAwsEnvironment } from '@dm/cdk-common';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';

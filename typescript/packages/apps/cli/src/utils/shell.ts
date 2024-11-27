@@ -55,15 +55,15 @@ const switchTo = async (packageName: string, isWindows?: boolean): Promise<Folde
 };
 
 const switchToInfrastructureHub = async (isWindows?: boolean): Promise<Folder> => {
-	return switchTo('@df/infrastructure-hub', isWindows);
+	return switchTo('@dm/infrastructure-hub', isWindows);
 };
 
 const switchToInfrastructureSpoke = async (isWindows?: boolean): Promise<Folder> => {
-	return switchTo('@df/infrastructure-spoke', isWindows);
+	return switchTo('@dm/infrastructure-spoke', isWindows);
 };
 
 const switchToInfrastructureDemo = async (isWindows?: boolean): Promise<Folder> => {
-	return switchTo('@df/infrastructure-demo', isWindows);
+	return switchTo('@dm/infrastructure-demo', isWindows);
 };
 
 const switchToICli = async (): Promise<Folder> => {

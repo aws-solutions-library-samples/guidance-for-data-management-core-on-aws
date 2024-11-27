@@ -1,7 +1,7 @@
 {
-  "name": "@df/discovery",
+  "name": "@dm/discovery",
   "version": "0.1.0",
-  "description": "DF Discovery module",
+  "description": "DM Discovery module",
   "type": "module",
   "scripts": {
     "clean:package": "npx shx rm -rf dist *.log .rush tsconfig.tsbuildinfo",

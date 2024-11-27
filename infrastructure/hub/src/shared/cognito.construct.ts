@@ -15,7 +15,7 @@ import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import path from 'path';
 import { Runtime, Tracing } from 'aws-cdk-lib/aws-lambda';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
-import { getLambdaArchitecture } from '@df/cdk-common';
+import { getLambdaArchitecture } from '@dm/cdk-common';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -32,9 +32,9 @@ export interface CognitoConstructProperties {
 }
 
 
-export const userPoolArnParameter = `/df/shared/cognito/userPoolArn`;
-export const userPoolClientIdParameter = `/df/shared/cognito/userPoolClientId`;
-export const userPoolDomainParameter = `/df/shared/cognito/userPoolDomain`;
+export const userPoolArnParameter = `/dm/shared/cognito/userPoolArn`;
+export const userPoolClientIdParameter = `/dm/shared/cognito/userPoolClientId`;
+export const userPoolDomainParameter = `/dm/shared/cognito/userPoolDomain`;
 
 export class Cognito extends Construct {
 	public readonly userPoolId: string;
@@ -42,7 +42,7 @@ export class Cognito extends Construct {
 	constructor(scope: Construct, id: string, props: CognitoConstructProperties) {
 		super(scope, id);
 
-		const namePrefix = `df`;
+		const namePrefix = `dm`;
 
 		const preTokenGenerationLambdaTrigger = new NodejsFunction(this, 'PreTokenGenerationLambdaTrigger', {
 			functionName: `${namePrefix}-preTokenGenerationLambdaTrigger`,

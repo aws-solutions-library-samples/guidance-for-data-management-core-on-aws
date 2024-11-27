@@ -1,4 +1,4 @@
-import { Bus, OrganizationUnitPath } from "@df/cdk-common";
+import { Bus, OrganizationUnitPath } from "@dm/cdk-common";
 import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
 
@@ -15,17 +15,17 @@ export class EventBusSpoke extends Construct {
   ) {
     super(scope, id);
 
-    // DF Spoke Event Bus
-    const dfSpokeEventBus = new Bus(this, "SpokeEventBus", true);
+    // DM Spoke Event Bus
+    const dmSpokeEventBus = new Bus(this, "SpokeEventBus", true);
 
     // Allow hub account to put events to this event bus
-    dfSpokeEventBus.eventBus.addToResourcePolicy(
+    dmSpokeEventBus.eventBus.addToResourcePolicy(
       new iam.PolicyStatement({
         sid: "AllowHubAccountToPutEvents",
         effect: iam.Effect.ALLOW,
         principals: [new iam.AccountPrincipal(props.hubAccountId)],
         actions: ["events:PutEvents"],
-        resources: [dfSpokeEventBus.eventBus.eventBusArn],
+        resources: [dmSpokeEventBus.eventBus.eventBusArn],
         conditions: {
           "ForAnyValue:StringEquals": {
             "aws:PrincipalOrgPaths": `${props.orgPath.orgId}/${props.orgPath.rootId}/${props.orgPath.ouId}/`,

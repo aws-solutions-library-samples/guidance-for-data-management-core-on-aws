@@ -1,5 +1,5 @@
 {
-	"name": "@df/validators",
+	"name": "@dm/validators",
 	"version": "1.0.0",
 	"description": "Validation library to validate data inputs",
 	"author": "Pouya Bahavar <bahavar@amazon.com>",
